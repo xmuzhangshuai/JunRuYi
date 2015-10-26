@@ -12,11 +12,11 @@ public class Generator {
 	 */
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
-		Schema schema = new Schema(1, "com.quanzi.entities");
-		schema.setDefaultJavaPackageDao("com.quanzi.dao");
+		Schema schema = new Schema(1, "com.junruyi.entities");
+		schema.setDefaultJavaPackageDao("com.junruyi.dao");
 		schema.enableKeepSectionsByDefault();
 		addData(schema);
-		new DaoGenerator().generateAll(schema, "../quanzi/src-models");
+		new DaoGenerator().generateAll(schema, "../JunRuYi/src-models");
 	}
 
 	private static void addData(Schema schema) {
