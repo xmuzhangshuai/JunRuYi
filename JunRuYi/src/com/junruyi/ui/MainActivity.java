@@ -1,4 +1,4 @@
-package com.smallrhino.ui;
+package com.junruyi.ui;
 
 import com.smallrhino.junruyi.R;
 
