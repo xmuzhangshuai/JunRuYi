@@ -52,9 +52,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 主页面 -->
         <activity
             android:name="com.junruyi.ui.MainActivity"
             android:screenOrientation="portrait" >
+        </activity>
+
+        <!-- 首次安装运行页面 -->
+        <activity
+            android:name="com.junruyi.ui.GuidePagerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <service
+            android:name="com.umeng.update.net.DownloadingService"
+            android:process=":DownloadingService" >
+        </service>
+
+        <activity
+            android:name="com.umeng.update.UpdateDialogActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
 
         <meta-data
