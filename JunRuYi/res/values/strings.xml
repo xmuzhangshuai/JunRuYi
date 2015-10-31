@@ -3,5 +3,6 @@
 
     <string name="app_name">君儒艺</string>
     <string name="can_not_find_version_name">获取版本号失败</string>
+    <string name="info">儒艺，让生活称心如意</string>
 
 </resources>

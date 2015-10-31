@@ -1,6 +1,12 @@
 package com.junruyi.ui;
 
 import com.junruyi.base.BaseV4Fragment;
+import com.smallrhino.junruyi.R;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * @description:设备列表
@@ -10,6 +16,17 @@ import com.junruyi.base.BaseV4Fragment;
  */
 public class MainEquipmentFragment extends BaseV4Fragment {
 	public final static String TAG = "MainEquipmentFragment";
+	private View rootView;// 根View
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		rootView = inflater.inflate(R.layout.fragment_equipment, container, false);
+		findViewById();// 初始化views
+		initView();
+
+		return rootView;
+	}
 
 	@Override
 	protected void findViewById() {
