@@ -27,8 +27,8 @@ import android.widget.ImageView;
 public class GuidePagerActivity extends BaseFragmentActivity {
 	// 翻页控件
 	private ViewPager mViewPager;
-	private Button loginButton;
-	private Button registerButton;
+	private Button beginBtn;
+//	private Button registerButton;
 
 	// 这5个是底部显示当前状态点imageView
 	private ImageView mPage0;
@@ -93,18 +93,18 @@ public class GuidePagerActivity extends BaseFragmentActivity {
 		// 填充ViewPager的数据适配器
 		GuidePagerAdapter mPagerAdapter = new GuidePagerAdapter(views, titles);
 		mViewPager.setAdapter(mPagerAdapter);
-//		loginButton = (Button) view4.findViewById(R.id.login_btn);
+		beginBtn = (Button) view4.findViewById(R.id.begin);
 //		registerButton = (Button) view4.findViewById(R.id.register_btn);
-//		loginButton.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				Intent intent = new Intent(GuidePagerActivity.this, LoginActivity.class);
-//				startActivity(intent);
-//				overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-//			}
-//		});
+		beginBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(GuidePagerActivity.this, MainActivity.class);
+				startActivity(intent);
+				overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+			}
+		});
 //
 //		registerButton.setOnClickListener(new OnClickListener() {
 //
