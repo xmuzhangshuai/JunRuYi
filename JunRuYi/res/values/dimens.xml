@@ -1,5 +1,9 @@
 <resources>
 
     <dimen name="navigation_height">52dp</dimen>
- <dimen name="motify_data_space">25dp</dimen>
+    <dimen name="motify_data_space">25dp</dimen>
+    <dimen name="new_msg">11dp</dimen>
+    <dimen name="day_recommend_padding">40dp</dimen>
+    <dimen name="personal_timecapsule_padding">15dp</dimen>
+
 </resources>

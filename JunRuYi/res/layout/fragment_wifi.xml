@@ -7,4 +7,12 @@
 
     <include layout="@layout/top_navigation" />
 
+    <ListView
+        android:id="@+id/wifi_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/system_gray"
+        android:dividerHeight="0.5dp" >
+    </ListView>
+
 </LinearLayout>
