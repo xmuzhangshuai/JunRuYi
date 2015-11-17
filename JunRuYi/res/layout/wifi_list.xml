@@ -15,7 +15,7 @@
         android:layout_height="20dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/logo1"
+        android:src="@drawable/logo0"
         android:visibility="invisible" />
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/image"
         android:ellipsize="end"
         android:maxLength="10"
@@ -35,7 +35,7 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_centerVertical="true"
-        android:layout_marginRight="30dp"
+        android:layout_marginRight="20dp"
         android:layout_toLeftOf="@+id/infoBtn"
         android:src="@drawable/wifi" />
 
@@ -45,6 +45,6 @@
         android:layout_height="25dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/location_checked" />
+        android:src="@drawable/info" />
 
 </RelativeLayout>
