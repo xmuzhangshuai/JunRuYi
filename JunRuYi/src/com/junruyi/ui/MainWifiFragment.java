@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.junruyi.base.BaseV4Fragment;
+import com.junruyi.db.WifiDbService;
 import com.junruyi.entities.EquipMent;
 import com.junruyi.entities.Wifi;
+import com.junruyi.utils.LogTool;
 import com.smallrhino.junruyi.R;
 
 import android.os.Bundle;
@@ -28,11 +30,17 @@ public class MainWifiFragment extends BaseV4Fragment {
 	private View rootView;// 根View
 	private ListView wifiListView;
 	private List<Wifi> dataList;
+	private WifiDbService wifiDbService;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		rootView = inflater.inflate(R.layout.fragment_wifi, container, false);
+		wifiDbService = WifiDbService.getInstance(getActivity());
+		wifiDbService.addWifi("wifi4", "1");
+		wifiDbService.addWifi("wifi5", "2");
+		wifiDbService.addWifi("wifi6", "3");
+
 		initWifiList();
 		findViewById();// 初始化views
 		initView();
@@ -57,16 +65,22 @@ public class MainWifiFragment extends BaseV4Fragment {
 	 */
 	private void initWifiList() {
 		dataList = new ArrayList<>();
-		Wifi w1 = new Wifi(Long.valueOf(1), "510");
-		Wifi w2 = new Wifi(Long.valueOf(1), "TP_LINK_242");
-		Wifi w3 = new Wifi(Long.valueOf(1), "办公室");
-		Wifi w4 = new Wifi(Long.valueOf(1), "家");
-		Wifi w5 = new Wifi(Long.valueOf(1), "509");
-		dataList.add(w1);
-		dataList.add(w2);
-		dataList.add(w3);
-		dataList.add(w4);
-		dataList.add(w5);
+		dataList = wifiDbService.getWifiList();
+		for (Wifi wifi : dataList) {
+			if (wifi != null) {
+				LogTool.e("------" + wifi.getId() + wifi.getWifiName());
+			}
+		}
+		//		Wifi w1 = new Wifi(Long.valueOf(1), "510", "1");
+		//		Wifi w2 = new Wifi(Long.valueOf(1), "TP_LINK_242", "1");
+		//		Wifi w3 = new Wifi(Long.valueOf(1), "办公室", "1");
+		//		Wifi w4 = new Wifi(Long.valueOf(1), "家", "1");
+		//		Wifi w5 = new Wifi(Long.valueOf(1), "509", "1");
+		//		dataList.add(w1);
+		//		dataList.add(w2);
+		//		dataList.add(w3);
+		//		dataList.add(w4);
+		//		dataList.add(w5);
 	}
 
 	/**

@@ -11,6 +11,7 @@ public class Wifi {
 
     private Long id;
     private String wifiName;
+    private String bssid;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -22,9 +23,10 @@ public class Wifi {
         this.id = id;
     }
 
-    public Wifi(Long id, String wifiName) {
+    public Wifi(Long id, String wifiName, String bssid) {
         this.id = id;
         this.wifiName = wifiName;
+        this.bssid = bssid;
     }
 
     public Long getId() {
@@ -41,6 +43,14 @@ public class Wifi {
 
     public void setWifiName(String wifiName) {
         this.wifiName = wifiName;
+    }
+
+    public String getBssid() {
+        return bssid;
+    }
+
+    public void setBssid(String bssid) {
+        this.bssid = bssid;
     }
 
     // KEEP METHODS - put your custom methods here

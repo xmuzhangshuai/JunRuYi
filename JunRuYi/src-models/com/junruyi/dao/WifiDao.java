@@ -25,6 +25,7 @@ public class WifiDao extends AbstractDao<Wifi, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property WifiName = new Property(1, String.class, "wifiName", false, "WIFI_NAME");
+        public final static Property Bssid = new Property(2, String.class, "bssid", false, "BSSID");
     };
 
 
@@ -40,8 +41,9 @@ public class WifiDao extends AbstractDao<Wifi, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"WIFI\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"WIFI_NAME\" TEXT);"); // 1: wifiName
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"WIFI_NAME\" TEXT," + // 1: wifiName
+                "\"BSSID\" TEXT);"); // 2: bssid
     }
 
     /** Drops the underlying database table. */
@@ -64,6 +66,11 @@ public class WifiDao extends AbstractDao<Wifi, Long> {
         if (wifiName != null) {
             stmt.bindString(2, wifiName);
         }
+ 
+        String bssid = entity.getBssid();
+        if (bssid != null) {
+            stmt.bindString(3, bssid);
+        }
     }
 
     /** @inheritdoc */
@@ -77,7 +84,8 @@ public class WifiDao extends AbstractDao<Wifi, Long> {
     public Wifi readEntity(Cursor cursor, int offset) {
         Wifi entity = new Wifi( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1) // wifiName
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // wifiName
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // bssid
         );
         return entity;
     }
@@ -87,6 +95,7 @@ public class WifiDao extends AbstractDao<Wifi, Long> {
     public void readEntity(Cursor cursor, Wifi entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setWifiName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setBssid(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
      }
     
     /** @inheritdoc */

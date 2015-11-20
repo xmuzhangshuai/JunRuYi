@@ -22,18 +22,19 @@ public class Generator {
 	private static void addData(Schema schema) {
 		/****添加设备*******/
 		Entity equipMentEntity = schema.addEntity("EquipMent");
-		equipMentEntity.addIdProperty();
+		equipMentEntity.addIdProperty().autoincrement();
 		equipMentEntity.addStringProperty("equipMentName");
 		equipMentEntity.addIntProperty("equipMentLogo");
 
 		/****添加Wifi*******/
 		Entity wifiEntity = schema.addEntity("Wifi");
-		wifiEntity.addIdProperty();
+		wifiEntity.addIdProperty().autoincrement();
 		wifiEntity.addStringProperty("wifiName");
+		wifiEntity.addStringProperty("bssid");
 
 		/****添加丢失信息*******/
 		Entity locationEntity = schema.addEntity("Location");
-		locationEntity.addIdProperty();
+		locationEntity.addIdProperty().autoincrement();
 		locationEntity.addStringProperty("latitude");//纬度
 		locationEntity.addStringProperty("longtitude");//经度
 		locationEntity.addStringProperty("address");
