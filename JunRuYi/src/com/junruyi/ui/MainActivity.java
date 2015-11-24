@@ -68,7 +68,7 @@ public class MainActivity extends BaseFragmentActivity {
 		mTabs[3] = (View) findViewById(R.id.btn_container_market);
 		mTabs[4] = (View) findViewById(R.id.btn_container_setting);
 		// 把第一个tab设为选中状态
-		mTabs[1].setSelected(true);
+		mTabs[0].setSelected(true);
 	}
 
 	@Override

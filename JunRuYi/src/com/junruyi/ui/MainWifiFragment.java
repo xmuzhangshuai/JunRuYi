@@ -46,9 +46,6 @@ public class MainWifiFragment extends BaseV4Fragment {
 		// TODO Auto-generated method stub
 		rootView = inflater.inflate(R.layout.fragment_wifi, container, false);
 		wifiDbService = WifiDbService.getInstance(getActivity());
-		//		wifiDbService.addWifi("wifi4", "1");
-		//		wifiDbService.addWifi("wifi5", "2");
-		//		wifiDbService.addWifi("wifi6", "3");
 
 		initWifiList();
 		findViewById();// 初始化views
@@ -74,10 +71,9 @@ public class MainWifiFragment extends BaseV4Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				final Wifi wifi = dataList.get(position);
-				Log.i("info", wifi.getBssid() + "-------");
 				final EditText inputServer = new EditText(getActivity());
 				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-				builder.setTitle("请输入Wifi名称").setIcon(android.R.drawable.ic_dialog_info).setView(inputServer).setNegativeButton("取消", null);
+				builder.setTitle("请输入新Wifi名称").setIcon(android.R.drawable.ic_dialog_info).setView(inputServer).setNegativeButton("取消", null);
 				builder.setPositiveButton("修改", new DialogInterface.OnClickListener() {
 
 					public void onClick(DialogInterface dialog, int which) {
