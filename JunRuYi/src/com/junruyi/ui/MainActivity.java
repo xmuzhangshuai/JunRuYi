@@ -1,14 +1,21 @@
 package com.junruyi.ui;
 
 import com.junruyi.base.BaseFragmentActivity;
+import com.junruyi.customewidget.MyAlertDialog;
+import com.junruyi.db.WifiDbService;
+import com.junruyi.entities.Wifi;
+import com.junruyi.utils.WifiUtil;
 import com.smallrhino.junruyi.R;
 import com.umeng.update.UmengUpdateAgent;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 /**
  * @description:
@@ -28,6 +35,8 @@ public class MainActivity extends BaseFragmentActivity {
 	// 当前fragment的index
 	private int currentTabIndex = 0;
 	private Fragment[] fragments;
+	private WifiDbService wifiDbService;
+	private WifiUtil wifiUtil;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +55,7 @@ public class MainActivity extends BaseFragmentActivity {
 
 		findViewById();
 		initView();
+		showAddWifi();
 	}
 
 	@Override
@@ -58,7 +68,7 @@ public class MainActivity extends BaseFragmentActivity {
 		mTabs[3] = (View) findViewById(R.id.btn_container_market);
 		mTabs[4] = (View) findViewById(R.id.btn_container_setting);
 		// 把第一个tab设为选中状态
-		mTabs[0].setSelected(true);
+		mTabs[1].setSelected(true);
 	}
 
 	@Override
@@ -66,6 +76,24 @@ public class MainActivity extends BaseFragmentActivity {
 		// TODO Auto-generated method stub
 		// 添加显示第一个fragment
 		getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, equipmentFragment, MainEquipmentFragment.TAG).show(equipmentFragment).commit();
+	}
+
+	/**
+	 * 判断当前wifi是否需要添加到数据库
+	 */
+	private void showAddWifi() {
+		wifiDbService = WifiDbService.getInstance(MainActivity.this);
+		wifiUtil = new WifiUtil(this);
+		String bssid = wifiUtil.getBSSID();
+		String name = wifiUtil.getName();
+		if (!bssid.isEmpty()) {
+			long count = wifiDbService.countWifi();
+			Wifi temp  = wifiDbService.getWifiByBssid(bssid);
+			if (count < 6 && temp==null) {
+				//添加当前无线到安全wifi
+				addWifi(name,bssid);
+			}
+		}
 	}
 
 	/**
@@ -114,5 +142,34 @@ public class MainActivity extends BaseFragmentActivity {
 		// 把当前tab设为选中状态
 		mTabs[index].setSelected(true);
 		currentTabIndex = index;
+	}
+	
+	/**
+	 * 添加安全wifi的方法
+	 */
+	public void addWifi(final String wifiName, final String bssid) {
+		final MyAlertDialog myAlertDialog = new MyAlertDialog(this);
+		myAlertDialog.setTitle("提示");
+		myAlertDialog.setMessage("是否设置当前连接的wifi为安全？");
+		View.OnClickListener comfirm = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				//点击确认则做删除安全wifi操作
+				wifiDbService.addWifi(wifiName, bssid);
+				myAlertDialog.dismiss();
+			}
+		};
+		View.OnClickListener cancel = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				myAlertDialog.dismiss();
+			}
+		};
+		myAlertDialog.setPositiveButton("确定", comfirm);
+		myAlertDialog.setNegativeButton("取消", cancel);
+		myAlertDialog.show();
 	}
 }

@@ -4,17 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.junruyi.base.BaseV4Fragment;
+import com.junruyi.customewidget.MyAlertDialog;
 import com.junruyi.db.WifiDbService;
-import com.junruyi.entities.EquipMent;
 import com.junruyi.entities.Wifi;
 import com.junruyi.utils.LogTool;
 import com.smallrhino.junruyi.R;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -31,15 +39,16 @@ public class MainWifiFragment extends BaseV4Fragment {
 	private ListView wifiListView;
 	private List<Wifi> dataList;
 	private WifiDbService wifiDbService;
+	private WifiAdapter wifiAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		rootView = inflater.inflate(R.layout.fragment_wifi, container, false);
 		wifiDbService = WifiDbService.getInstance(getActivity());
-		wifiDbService.addWifi("wifi4", "1");
-		wifiDbService.addWifi("wifi5", "2");
-		wifiDbService.addWifi("wifi6", "3");
+		//		wifiDbService.addWifi("wifi4", "1");
+		//		wifiDbService.addWifi("wifi5", "2");
+		//		wifiDbService.addWifi("wifi6", "3");
 
 		initWifiList();
 		findViewById();// 初始化views
@@ -57,7 +66,46 @@ public class MainWifiFragment extends BaseV4Fragment {
 	@Override
 	protected void initView() {
 		// TODO Auto-generated method stub
-		wifiListView.setAdapter(new WifiAdapter());
+		wifiAdapter = new WifiAdapter();
+		wifiListView.setAdapter(wifiAdapter);
+		//wifilist单击事件
+		wifiListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				final Wifi wifi = dataList.get(position);
+				Log.i("info", wifi.getBssid() + "-------");
+				final EditText inputServer = new EditText(getActivity());
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+				builder.setTitle("请输入Wifi名称").setIcon(android.R.drawable.ic_dialog_info).setView(inputServer).setNegativeButton("取消", null);
+				builder.setPositiveButton("修改", new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog, int which) {
+						String newWifiName = inputServer.getText().toString();
+						if (!newWifiName.isEmpty()) {
+							//修改wifi名称
+							Wifi temp = new Wifi(wifi.getId(), newWifiName, wifi.getBssid());
+							wifiDbService.updateWifiName(temp);
+							//通知数据源有更新
+							initWifiList();
+							wifiAdapter.notifyDataSetChanged();
+						}
+					}
+				});
+				builder.show();
+			}
+		});
+		/**
+		 * 长按删除
+		 */
+		wifiListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				Wifi wifi = dataList.get(position);
+				deleteWifi(wifi);
+				return true;
+			}
+		});
 	}
 
 	/**
@@ -68,7 +116,7 @@ public class MainWifiFragment extends BaseV4Fragment {
 		dataList = wifiDbService.getWifiList();
 		for (Wifi wifi : dataList) {
 			if (wifi != null) {
-				LogTool.e("------" + wifi.getId() + wifi.getWifiName());
+				LogTool.e("------" + wifi.getBssid() + wifi.getWifiName());
 			}
 		}
 		//		Wifi w1 = new Wifi(Long.valueOf(1), "510", "1");
@@ -148,5 +196,38 @@ public class MainWifiFragment extends BaseV4Fragment {
 
 			return view;
 		}
+	}
+
+	/**
+	 * 删除wifi的方法
+	 */
+	public void deleteWifi(final Wifi delWifi) {
+		final MyAlertDialog myAlertDialog = new MyAlertDialog(getActivity());
+		myAlertDialog.setTitle("提示");
+		myAlertDialog.setMessage("是否将该安全wifi移除？");
+		View.OnClickListener comfirm = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				//点击确认则做删除安全wifi操作
+				wifiDbService.deleteWifi(delWifi);
+				myAlertDialog.dismiss();
+				//通知数据源有更新
+				initWifiList();
+				wifiAdapter.notifyDataSetChanged();
+			}
+		};
+		View.OnClickListener cancel = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				myAlertDialog.dismiss();
+			}
+		};
+		myAlertDialog.setPositiveButton("移除", comfirm);
+		myAlertDialog.setNegativeButton("取消", cancel);
+		myAlertDialog.show();
 	}
 }

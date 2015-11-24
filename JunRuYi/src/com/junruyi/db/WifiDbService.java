@@ -55,13 +55,19 @@ public class WifiDbService {
 	public List<Wifi> getWifiList() {
 		return wifiDao.loadAll();
 	}
-
+	public long countWifi(){
+		return wifiDao.count();
+	}
+	
 	public void deleteWifi(Wifi entity) {
 		wifiDao.delete(entity);
 	}
 
 	public void updateWifiName(Wifi entity) {
 		wifiDao.update(entity);
+	}
+	public Wifi getWifiByBssid(String bssid){
+		return wifiDao.queryBuilder().where(Properties.Bssid.eq(bssid)).unique();
 	}
 
 }
