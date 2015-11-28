@@ -1,8 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@drawable/back"
+    android:layout_height="match_parent"
+    android:background="@drawable/back"
     android:orientation="vertical" >
-     <include layout="@layout/top_navigation" />
+
+    <include layout="@layout/top_navigation" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/l3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/sel_color_white_gray"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/bag3"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/bag3" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingBottom="10dp"
+                android:text="@string/shubao"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0.2dp"
+            android:layout_height="match_parent"
+            android:background="@color/system_gray" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/l2"
+            android:background="@color/sel_color_white_gray"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/bag2"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/bag2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingBottom="10dp"
+                android:text="@string/kuabao"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0.2dip"
+        android:background="@color/system_gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/sel_color_white_gray"
+            android:id="@+id/l0"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/bag"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/bag" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingBottom="10dp"
+                android:text="@string/shouhuan"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0.2dp"
+            android:layout_height="match_parent"
+            android:background="@color/system_gray" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/l1"
+            android:background="@color/sel_color_white_gray"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/bag1"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/bag1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingBottom="10dp"
+                android:text="@string/shoutibao"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/tbstore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/sel_color_white_gray"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:src="@drawable/shop1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/tbsc"
+                android:textColor="@color/red"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="30dp"
+                android:src="@drawable/shop1" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0.2dip"
+            android:background="@color/system_gray" />
+
+        <LinearLayout
+            android:id="@+id/wxstore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/sel_color_white_gray"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:src="@drawable/shop2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/wxsc"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="30dp"
+                android:src="@drawable/shop2" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

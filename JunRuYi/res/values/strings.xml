@@ -5,4 +5,11 @@
     <string name="can_not_find_version_name">获取版本号失败</string>
     <string name="info">儒艺，让生活称心如意</string>
 
+    <!-- 商城页面 -->
+    <string name="shubao">书包</string>
+    <string name="kuabao">挎包</string>
+    <string name="shouhuan">手环</string>
+    <string name="shoutibao">手提包</string>
+    <string name="tbsc">君儒艺（淘宝商城）</string>
+    <string name="wxsc">君儒艺（微信商城）</string>
 </resources>
