@@ -1,6 +1,8 @@
 package com.junruyi.ui;
 
+import com.junruyi.base.BaseApplication;
 import com.junruyi.base.BaseV4Fragment;
+import com.junruyi.utils.UserPreference;
 import com.smallrhino.junruyi.R;
 
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 /**
  * @description:设置页面
@@ -31,11 +34,14 @@ public class MainSettingFragment extends BaseV4Fragment implements OnClickListen
 	private View settingIntro;// 使用介绍
 	private View settingRefresh;// 版本检测
 	private View settingAbout;// 关于君儒艺
+	
+	private UserPreference userPreference;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		rootView = inflater.inflate(R.layout.fragment_setting, container, false);
+		userPreference = BaseApplication.getInstance().getUserPreference();
 		findViewById();// 初始化views
 		initView();
 
@@ -74,28 +80,36 @@ public class MainSettingFragment extends BaseV4Fragment implements OnClickListen
 			if (iv_switch_open_warn.getVisibility() == View.VISIBLE) {
 				iv_switch_open_warn.setVisibility(View.INVISIBLE);
 				iv_switch_close_warn.setVisibility(View.VISIBLE);
+				//设置为报警,true为报警，false为报警免打扰
+				userPreference.setNoWarn(true);
 			} else {
 				iv_switch_open_warn.setVisibility(View.VISIBLE);
 				iv_switch_close_warn.setVisibility(View.INVISIBLE);
+				//设置为不报警
+				userPreference.setNoWarn(false);
 			}
 			break;
 		case R.id.rl_switch_notificatoin:
 			if (iv_switch_open_notification.getVisibility() == View.VISIBLE) {
 				iv_switch_open_notification.setVisibility(View.INVISIBLE);
 				iv_switch_close_notification.setVisibility(View.VISIBLE);
+				//设置为不接收消息通知
+				userPreference.setInfoNotify(false);
 			} else {
 				iv_switch_open_notification.setVisibility(View.VISIBLE);
 				iv_switch_close_notification.setVisibility(View.INVISIBLE);
+				//设置为接收消息通知
+				userPreference.setInfoNotify(true);
 			}
 			break;
 		case R.id.setting_intro:
-
+			Toast.makeText(getActivity(), "君儒艺app使用介绍...", Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.setting_refresh:
-
+			Toast.makeText(getActivity(), "版本检测尚未接入...", Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.setting_about:
-
+			Toast.makeText(getActivity(), "君儒艺项目介绍...", Toast.LENGTH_SHORT).show();
 			break;
 
 		default:

@@ -165,7 +165,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="30dp"
-                android:src="@drawable/shop1" />
+                android:src="@drawable/icon_go_right" />
         </LinearLayout>
 
         <View
@@ -200,7 +200,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="30dp"
-                android:src="@drawable/shop2" />
+                android:src="@drawable/icon_go_right" />
         </LinearLayout>
     </LinearLayout>
 

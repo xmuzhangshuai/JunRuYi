@@ -1,7 +1,5 @@
 package com.junruyi.utils;
 
-import java.util.Date;
-import java.util.Properties;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,7 +7,7 @@ import android.content.SharedPreferences;
 public class UserPreference {
 	private SharedPreferences sp;
 	private SharedPreferences.Editor editor;
-	public static final String USER_SHAREPREFERENCE = "userSharePreference";// �û�SharePreference
+	public static final String USER_SHAREPREFERENCE = "userSharePreference";// SharePreference
 	private Context context;
 
 	public UserPreference(Context context) {
@@ -18,6 +16,24 @@ public class UserPreference {
 		editor = sp.edit();
 	}
 
+	
+	
+	public boolean getInfoNotify() {
+		return sp.getBoolean("infonotify", false);
+	}
+	public void setInfoNotify(boolean notify){
+		editor.putBoolean("infonotify", notify);
+		editor.commit();
+	}
+	
+	public boolean getNoWarn() {
+		return sp.getBoolean("nowarn", false);
+	}
+	public void setNoWarn(boolean nowarn){
+		editor.putBoolean("nowarn", nowarn);
+		editor.commit();
+	}
+	
 //	/**
 //	 * ������
 //	 */
