@@ -1,13 +1,22 @@
 package com.junruyi.ui;
 
+import java.util.List;
+
 import com.junruyi.base.BaseFragmentActivity;
 import com.junruyi.customewidget.MyAlertDialog;
 import com.junruyi.db.WifiDbService;
 import com.junruyi.entities.Wifi;
+import com.junruyi.service.BlueToothService;
 import com.junruyi.utils.WifiUtil;
 import com.smallrhino.junruyi.R;
+import com.umeng.analytics.c;
 import com.umeng.update.UmengUpdateAgent;
 
+import android.R.string;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -38,6 +47,9 @@ public class MainActivity extends BaseFragmentActivity {
 	private WifiDbService wifiDbService;
 	private WifiUtil wifiUtil;
 
+	private MsgReceiver msgReceiver;
+	
+	private String devices;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,8 +65,16 @@ public class MainActivity extends BaseFragmentActivity {
 		settingFragment = new MainSettingFragment();
 		fragments = new Fragment[] { equipmentFragment, wifiFragment, locationFragment, marketFragment, settingFragment };
 
+		//动态注册广播接收器
+		msgReceiver = new MsgReceiver();
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction("com.example.communication.RECEIVER");
+		registerReceiver(msgReceiver, intentFilter);
+		Intent service = new Intent(this, BlueToothService.class);
+		startService(service);
+		
 		findViewById();
-		initView();
+		//initView();
 		showAddWifi();
 	}
 
@@ -75,6 +95,9 @@ public class MainActivity extends BaseFragmentActivity {
 	protected void initView() {
 		// TODO Auto-generated method stub
 		// 添加显示第一个fragment
+		Bundle bundle = new Bundle();
+		bundle.putString("key",devices);
+		equipmentFragment.setArguments(bundle);
 		getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, equipmentFragment, MainEquipmentFragment.TAG).show(equipmentFragment).commit();
 	}
 
@@ -88,10 +111,10 @@ public class MainActivity extends BaseFragmentActivity {
 		String name = wifiUtil.getName();
 		if (!bssid.isEmpty()) {
 			long count = wifiDbService.countWifi();
-			Wifi temp  = wifiDbService.getWifiByBssid(bssid);
-			if (count < 6 && temp==null) {
+			Wifi temp = wifiDbService.getWifiByBssid(bssid);
+			if (count < 6 && temp == null) {
 				//添加当前无线到安全wifi
-				addWifi(name,bssid);
+				addWifi(name, bssid);
 			}
 		}
 	}
@@ -143,7 +166,7 @@ public class MainActivity extends BaseFragmentActivity {
 		mTabs[index].setSelected(true);
 		currentTabIndex = index;
 	}
-	
+
 	/**
 	 * 添加安全wifi的方法
 	 */
@@ -171,5 +194,23 @@ public class MainActivity extends BaseFragmentActivity {
 		myAlertDialog.setPositiveButton("确定", comfirm);
 		myAlertDialog.setNegativeButton("取消", cancel);
 		myAlertDialog.show();
+	}
+
+	/**
+	 * 广播接收器
+	 * @author len
+	 *
+	 */
+	public class MsgReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			//拿到数据
+			devices = intent.getStringExtra("progress");
+			if(!devices.isEmpty())
+				initView();
+			System.out.println("收到广播");
+		}
+
 	}
 }

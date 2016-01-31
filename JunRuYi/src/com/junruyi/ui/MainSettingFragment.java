@@ -1,15 +1,23 @@
 package com.junruyi.ui;
 
+import java.io.File;
+
 import com.junruyi.base.BaseApplication;
 import com.junruyi.base.BaseV4Fragment;
 import com.junruyi.utils.UserPreference;
 import com.smallrhino.junruyi.R;
 
+import android.content.Intent;
+import android.content.MutableContextWrapper;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -31,6 +39,7 @@ public class MainSettingFragment extends BaseV4Fragment implements OnClickListen
 	private ImageView iv_switch_open_notification;// 打开新消息通知imageView
 	private ImageView iv_switch_close_notification;// 关闭新消息通知imageview
 
+	private View settingPhoto;// 自拍
 	private View settingIntro;// 使用介绍
 	private View settingRefresh;// 版本检测
 	private View settingAbout;// 关于君儒艺
@@ -57,6 +66,7 @@ public class MainSettingFragment extends BaseV4Fragment implements OnClickListen
 		rl_switch_notification = (RelativeLayout) rootView.findViewById(R.id.rl_switch_notificatoin);
 		iv_switch_open_notification = (ImageView) rootView.findViewById(R.id.iv_switch_open_notification);
 		iv_switch_close_notification = (ImageView) rootView.findViewById(R.id.iv_switch_close_notification);
+		settingPhoto = rootView.findViewById(R.id.setting_photo);
 		settingIntro = rootView.findViewById(R.id.setting_intro);
 		settingRefresh = rootView.findViewById(R.id.setting_refresh);
 		settingAbout = rootView.findViewById(R.id.setting_about);
@@ -67,6 +77,7 @@ public class MainSettingFragment extends BaseV4Fragment implements OnClickListen
 		// TODO Auto-generated method stub
 		rl_switch_warn.setOnClickListener(this);
 		rl_switch_notification.setOnClickListener(this);
+		settingPhoto.setOnClickListener(this);
 		settingIntro.setOnClickListener(this);
 		settingRefresh.setOnClickListener(this);
 		settingAbout.setOnClickListener(this);
@@ -102,9 +113,15 @@ public class MainSettingFragment extends BaseV4Fragment implements OnClickListen
 				userPreference.setInfoNotify(true);
 			}
 			break;
+		case R.id.setting_photo:
+			Toast.makeText(getActivity(), "自拍功能...", Toast.LENGTH_SHORT).show();
+			Intent intent = new Intent(getActivity(), CameraDemoActivity.class);
+			startActivity(intent);
+			break;
 		case R.id.setting_intro:
 			Toast.makeText(getActivity(), "君儒艺app使用介绍...", Toast.LENGTH_SHORT).show();
 			break;
+			
 		case R.id.setting_refresh:
 			Toast.makeText(getActivity(), "版本检测尚未接入...", Toast.LENGTH_SHORT).show();
 			break;
@@ -116,5 +133,6 @@ public class MainSettingFragment extends BaseV4Fragment implements OnClickListen
 			break;
 		}
 	}
+	
 
 }

@@ -7,11 +7,9 @@ import com.junruyi.base.BaseV4Fragment;
 import com.junruyi.entities.EquipMent;
 import com.smallrhino.junruyi.R;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -29,11 +27,14 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 	private View rootView;// 根View
 	private ListView equipMentListView;
 	private List<EquipMent> dataList;
-
+	private String device;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		rootView = inflater.inflate(R.layout.fragment_equipment, container, false);
+
+		device = getArguments().getString("key");
+		System.out.println("equip:"+device);
 		initEquipmentList();
 		findViewById();// 初始化views
 		initView();
@@ -58,7 +59,7 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 	 */
 	private void initEquipmentList() {
 		dataList = new ArrayList<>();
-		EquipMent e1 = new EquipMent(Long.valueOf(1), "皮包1", R.drawable.logo1);
+		EquipMent e1 = new EquipMent(Long.valueOf(1), device, R.drawable.logo1);
 		EquipMent e2 = new EquipMent(Long.valueOf(2), "手镯", R.drawable.logo2);
 		EquipMent e3 = new EquipMent(Long.valueOf(3), "书包1", R.drawable.logo3);
 		EquipMent e4 = new EquipMent(Long.valueOf(4), "皮包2", R.drawable.logo4);
@@ -74,6 +75,9 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 		dataList.add(e7);
 	}
 
+	
+
+	
 	/**
 	 * @description:
 	 * @company: smallrhino
