@@ -97,11 +97,34 @@
             android:background="@color/system_gray" />
     </RelativeLayout>
 
+     <LinearLayout
+        android:id="@+id/setting_equipment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@color/sel_color_white_gray"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dip"
+            android:layout_marginBottom="@dimen/new_msg"
+            android:layout_marginTop="@dimen/new_msg"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/motify_data_space"
+            android:text="添加设备"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dip"
+            android:background="@color/system_gray" />
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/setting_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:background="@color/sel_color_white_gray"
         android:orientation="vertical" >
 

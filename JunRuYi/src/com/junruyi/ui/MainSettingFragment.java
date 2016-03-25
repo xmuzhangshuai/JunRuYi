@@ -38,7 +38,8 @@ public class MainSettingFragment extends BaseV4Fragment implements OnClickListen
 	private RelativeLayout rl_switch_notification;// 设置新消息通知布局
 	private ImageView iv_switch_open_notification;// 打开新消息通知imageView
 	private ImageView iv_switch_close_notification;// 关闭新消息通知imageview
-
+	
+	private View settingEquipment;// 自拍
 	private View settingPhoto;// 自拍
 	private View settingIntro;// 使用介绍
 	private View settingRefresh;// 版本检测
@@ -66,6 +67,7 @@ public class MainSettingFragment extends BaseV4Fragment implements OnClickListen
 		rl_switch_notification = (RelativeLayout) rootView.findViewById(R.id.rl_switch_notificatoin);
 		iv_switch_open_notification = (ImageView) rootView.findViewById(R.id.iv_switch_open_notification);
 		iv_switch_close_notification = (ImageView) rootView.findViewById(R.id.iv_switch_close_notification);
+		settingEquipment = rootView.findViewById(R.id.setting_equipment);
 		settingPhoto = rootView.findViewById(R.id.setting_photo);
 		settingIntro = rootView.findViewById(R.id.setting_intro);
 		settingRefresh = rootView.findViewById(R.id.setting_refresh);
@@ -77,6 +79,7 @@ public class MainSettingFragment extends BaseV4Fragment implements OnClickListen
 		// TODO Auto-generated method stub
 		rl_switch_warn.setOnClickListener(this);
 		rl_switch_notification.setOnClickListener(this);
+		settingEquipment.setOnClickListener(this);
 		settingPhoto.setOnClickListener(this);
 		settingIntro.setOnClickListener(this);
 		settingRefresh.setOnClickListener(this);
@@ -112,6 +115,11 @@ public class MainSettingFragment extends BaseV4Fragment implements OnClickListen
 				//设置为接收消息通知
 				userPreference.setInfoNotify(true);
 			}
+			break;
+		case R.id.setting_equipment:
+			Toast.makeText(getActivity(), "添加设备...", Toast.LENGTH_SHORT).show();
+			Intent se_intent = new Intent(getActivity(), AddEquipmentActivity.class);
+			startActivity(se_intent);
 			break;
 		case R.id.setting_photo:
 			Toast.makeText(getActivity(), "自拍功能...", Toast.LENGTH_SHORT).show();

@@ -7,6 +7,7 @@ import com.junruyi.customewidget.MyAlertDialog;
 import com.junruyi.db.WifiDbService;
 import com.junruyi.entities.Wifi;
 import com.junruyi.service.BlueToothService;
+import com.junruyi.utils.LogTool;
 import com.junruyi.utils.WifiUtil;
 import com.smallrhino.junruyi.R;
 import com.umeng.analytics.c;
@@ -46,10 +47,7 @@ public class MainActivity extends BaseFragmentActivity {
 	private Fragment[] fragments;
 	private WifiDbService wifiDbService;
 	private WifiUtil wifiUtil;
-
-	private MsgReceiver msgReceiver;
 	
-	private String devices;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,17 +62,8 @@ public class MainActivity extends BaseFragmentActivity {
 		marketFragment = new MainMarketFragment();
 		settingFragment = new MainSettingFragment();
 		fragments = new Fragment[] { equipmentFragment, wifiFragment, locationFragment, marketFragment, settingFragment };
-
-		//动态注册广播接收器
-		msgReceiver = new MsgReceiver();
-		IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction("com.example.communication.RECEIVER");
-		registerReceiver(msgReceiver, intentFilter);
-		Intent service = new Intent(this, BlueToothService.class);
-		startService(service);
-		
 		findViewById();
-		//initView();
+		initView();
 		showAddWifi();
 	}
 
@@ -95,9 +84,6 @@ public class MainActivity extends BaseFragmentActivity {
 	protected void initView() {
 		// TODO Auto-generated method stub
 		// 添加显示第一个fragment
-		Bundle bundle = new Bundle();
-		bundle.putString("key",devices);
-		equipmentFragment.setArguments(bundle);
 		getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, equipmentFragment, MainEquipmentFragment.TAG).show(equipmentFragment).commit();
 	}
 
@@ -179,7 +165,7 @@ public class MainActivity extends BaseFragmentActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				//点击确认则做删除安全wifi操作
+				//点击确认则做添加安全wifi操作
 				wifiDbService.addWifi(wifiName, bssid);
 				myAlertDialog.dismiss();
 			}
@@ -187,7 +173,6 @@ public class MainActivity extends BaseFragmentActivity {
 		View.OnClickListener cancel = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				myAlertDialog.dismiss();
 			}
 		};
@@ -196,21 +181,5 @@ public class MainActivity extends BaseFragmentActivity {
 		myAlertDialog.show();
 	}
 
-	/**
-	 * 广播接收器
-	 * @author len
-	 *
-	 */
-	public class MsgReceiver extends BroadcastReceiver {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			//拿到数据
-			devices = intent.getStringExtra("progress");
-			if(!devices.isEmpty())
-				initView();
-			System.out.println("收到广播");
-		}
-
-	}
+	
 }

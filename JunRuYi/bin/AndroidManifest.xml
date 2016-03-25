@@ -83,7 +83,10 @@
             android:name="com.junruyi.ui.CameraDemoActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
-
+ 		<activity
+            android:name="com.junruyi.ui.AddEquipmentActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        </activity>
         <service
             android:name="com.umeng.update.net.DownloadingService"
             android:process=":DownloadingService" >
@@ -93,6 +96,7 @@
             android:name="com.umeng.update.UpdateDialogActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
+        
         
         <service android:name="com.junruyi.service.BlueToothService" android:exported="false">
             <intent-filter >

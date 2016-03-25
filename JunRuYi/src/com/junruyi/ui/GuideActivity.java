@@ -2,6 +2,7 @@ package com.junruyi.ui;
 
 import com.junruyi.base.BaseActivity;
 import com.junruyi.db.CopyDataBase;
+import com.junruyi.service.BlueToothService;
 import com.junruyi.utils.SharePreferenceUtil;
 import com.smallrhino.junruyi.R;
 import com.umeng.analytics.MobclickAgent;
@@ -28,7 +29,7 @@ import android.widget.TextView;
 public class GuideActivity extends BaseActivity {
 	private SharePreferenceUtil sharePreferenceUtil;
 	private TextView versionInfotTextView;
-
+	Intent service = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,6 +39,8 @@ public class GuideActivity extends BaseActivity {
 		sharePreferenceUtil = new SharePreferenceUtil(this, SharePreferenceUtil.USE_COUNT);
 		int count = sharePreferenceUtil.getUseCount();
 
+		service = new Intent(this, BlueToothService.class);
+		startService(service);
 		// 开启百度推送服务
 		// PushManager.startWork(getApplicationContext(),
 		// PushConstants.LOGIN_TYPE_API_KEY,

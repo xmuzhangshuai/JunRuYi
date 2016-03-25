@@ -23,6 +23,7 @@ public class Generator {
 		/****ÃÌº”…Ë±∏*******/
 		Entity equipMentEntity = schema.addEntity("EquipMent");
 		equipMentEntity.addIdProperty().autoincrement();
+		equipMentEntity.addStringProperty("equipMentAddress");
 		equipMentEntity.addStringProperty("equipMentName");
 		equipMentEntity.addIntProperty("equipMentLogo");
 

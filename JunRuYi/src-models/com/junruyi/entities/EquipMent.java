@@ -17,6 +17,7 @@ import com.junruyi.dao.LocationDao;
 public class EquipMent {
 
     private Long id;
+    private String equipMentAddress;
     private String equipMentName;
     private Integer equipMentLogo;
 
@@ -38,8 +39,9 @@ public class EquipMent {
         this.id = id;
     }
 
-    public EquipMent(Long id, String equipMentName, Integer equipMentLogo) {
+    public EquipMent(Long id, String equipMentAddress, String equipMentName, Integer equipMentLogo) {
         this.id = id;
+        this.equipMentAddress = equipMentAddress;
         this.equipMentName = equipMentName;
         this.equipMentLogo = equipMentLogo;
     }
@@ -56,6 +58,14 @@ public class EquipMent {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getEquipMentAddress() {
+        return equipMentAddress;
+    }
+
+    public void setEquipMentAddress(String equipMentAddress) {
+        this.equipMentAddress = equipMentAddress;
     }
 
     public String getEquipMentName() {

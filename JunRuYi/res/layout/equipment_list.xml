@@ -37,6 +37,7 @@
         android:layout_centerVertical="true"
         android:background="@drawable/sel_warn_btn"
         android:text="报警"
+        android:focusable="false"
         android:textColor="@color/system_blue"
         android:textSize="16sp" />
 

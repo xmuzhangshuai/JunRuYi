@@ -24,8 +24,9 @@ public class EquipMentDao extends AbstractDao<EquipMent, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property EquipMentName = new Property(1, String.class, "equipMentName", false, "EQUIP_MENT_NAME");
-        public final static Property EquipMentLogo = new Property(2, Integer.class, "equipMentLogo", false, "EQUIP_MENT_LOGO");
+        public final static Property EquipMentAddress = new Property(1, String.class, "equipMentAddress", false, "EQUIP_MENT_ADDRESS");
+        public final static Property EquipMentName = new Property(2, String.class, "equipMentName", false, "EQUIP_MENT_NAME");
+        public final static Property EquipMentLogo = new Property(3, Integer.class, "equipMentLogo", false, "EQUIP_MENT_LOGO");
     };
 
     private DaoSession daoSession;
@@ -45,8 +46,9 @@ public class EquipMentDao extends AbstractDao<EquipMent, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"EQUIP_MENT\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"EQUIP_MENT_NAME\" TEXT," + // 1: equipMentName
-                "\"EQUIP_MENT_LOGO\" INTEGER);"); // 2: equipMentLogo
+                "\"EQUIP_MENT_ADDRESS\" TEXT," + // 1: equipMentAddress
+                "\"EQUIP_MENT_NAME\" TEXT," + // 2: equipMentName
+                "\"EQUIP_MENT_LOGO\" INTEGER);"); // 3: equipMentLogo
     }
 
     /** Drops the underlying database table. */
@@ -65,14 +67,19 @@ public class EquipMentDao extends AbstractDao<EquipMent, Long> {
             stmt.bindLong(1, id);
         }
  
+        String equipMentAddress = entity.getEquipMentAddress();
+        if (equipMentAddress != null) {
+            stmt.bindString(2, equipMentAddress);
+        }
+ 
         String equipMentName = entity.getEquipMentName();
         if (equipMentName != null) {
-            stmt.bindString(2, equipMentName);
+            stmt.bindString(3, equipMentName);
         }
  
         Integer equipMentLogo = entity.getEquipMentLogo();
         if (equipMentLogo != null) {
-            stmt.bindLong(3, equipMentLogo);
+            stmt.bindLong(4, equipMentLogo);
         }
     }
 
@@ -93,8 +100,9 @@ public class EquipMentDao extends AbstractDao<EquipMent, Long> {
     public EquipMent readEntity(Cursor cursor, int offset) {
         EquipMent entity = new EquipMent( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // equipMentName
-            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2) // equipMentLogo
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // equipMentAddress
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // equipMentName
+            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3) // equipMentLogo
         );
         return entity;
     }
@@ -103,8 +111,9 @@ public class EquipMentDao extends AbstractDao<EquipMent, Long> {
     @Override
     public void readEntity(Cursor cursor, EquipMent entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setEquipMentName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setEquipMentLogo(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
+        entity.setEquipMentAddress(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setEquipMentName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setEquipMentLogo(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
      }
     
     /** @inheritdoc */
