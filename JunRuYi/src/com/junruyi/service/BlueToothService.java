@@ -34,16 +34,13 @@ public class BlueToothService extends Service {
 	private final static String UUID_KEY_DATA = "0000ffe1-0000-1000-8000-00805f9b34fb";
 	private final static String PASS_KEY_DATA = "0000ffe2-0000-1000-8000-00805f9b34fb";
 	private final static String BATTERY_KEY_DATA = "00002a19-0000-1000-8000-00805f9b34fb";
-
 	private boolean mScanning;
 	private Handler mHandler;
 	private BluetoothAdapter mBluetoothAdapter;
 	private static BluetoothLeClass mBLE;
 
-	private List<BluetoothDevice> devices;
 	private static final long SCAN_PERIOD = 10000;
 
-	private Intent bleintent = new Intent("com.example.communication.RECEIVER");
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -53,13 +50,11 @@ public class BlueToothService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		System.out.println("onCreated");
 		equipmentDbService = EquipmentDbService
 				.getInstance(BlueToothService.this);
 		list = equipmentDbService.getEquipMentList();
 
 		mHandler = new Handler();
-		devices = new ArrayList<>();
 		// 初始化蓝牙适配器
 		final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
 		mBluetoothAdapter = bluetoothManager.getAdapter();
@@ -68,7 +63,6 @@ public class BlueToothService extends Service {
 					.show();
 			onDestroy();
 		}
-
 		// 该设备支持蓝牙，开启蓝牙
 		mBluetoothAdapter.enable();
 		mBLE = new BluetoothLeClass(getApplicationContext());
@@ -139,6 +133,7 @@ public class BlueToothService extends Service {
 		/**
 		 * 收到BLE终端写入数据回调,操作蓝牙模块
 		 */
+		
 		@Override
 		public void onCharacteristicWrite(BluetoothGatt gatt,
 				BluetoothGattCharacteristic characteristic) {
@@ -267,6 +262,8 @@ public class BlueToothService extends Service {
 			if (flag) {
 				LogTool.i("捕获一只野生蓝牙" + device.getName());
 				LogTool.i("捕获一只野生蓝牙" + device.getAddress());
+				Intent bleintent = new Intent();
+				bleintent.setAction("com.example.communication.RECEIVER");
 				bleintent.putExtra("addr", device.getAddress() + "");
 				bleintent.putExtra("name", device.getName() + "");
 				sendBroadcast(bleintent);

@@ -59,14 +59,24 @@ public class AddEquipmentActivity extends Activity {
 		lv.setAdapter(mAdapter);
 		lv.setOnItemClickListener(new ListViewListener());
 
-		service = new Intent(this, BlueToothService.class);
-		startService(service);
-		LogTool.e("执行service");
 		// 动态注册广播接收器
 		msgReceiver = new MsgReceiver();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction("com.example.communication.RECEIVER");
 		registerReceiver(msgReceiver, intentFilter);
+		
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		service = new Intent(this, BlueToothService.class);
+		startService(service);
+		LogTool.e("执行service");
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(msgReceiver);
 	}
 
 	public class ListViewListener implements OnItemClickListener {
@@ -92,6 +102,7 @@ public class AddEquipmentActivity extends Activity {
 			// 拿到数据
 			String addr = intent.getStringExtra("addr");
 			String name = intent.getStringExtra("name");
+			System.out.println("addr:" + addr);
 			if (!addr.isEmpty()) {
 				System.out.println("addr:" + addr);
 				HashMap<String, Object> map = new HashMap<>();
@@ -100,10 +111,7 @@ public class AddEquipmentActivity extends Activity {
 				map.put("ItemText", addr);
 				listItem.add(map);
 				mAdapter.notifyDataSetChanged();
-				Toast.makeText(AddEquipmentActivity.this, "正在刷新",
-						Toast.LENGTH_SHORT).show();
 			}
-			context.unregisterReceiver(this);
 		}
 	}
 

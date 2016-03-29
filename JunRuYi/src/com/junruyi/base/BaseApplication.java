@@ -1,6 +1,8 @@
 package com.junruyi.base;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.junruyi.dao.DaoMaster;
@@ -12,7 +14,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
+import android.R.bool;
 import android.app.Application;
+import android.bluetooth.BluetoothGatt;
 import android.content.Context;
 import android.media.MediaPlayer;
 
@@ -37,6 +41,14 @@ public class BaseApplication extends Application {
 	private UserPreference userPreference;
 	private MediaPlayer messagePlayer;
 
+	
+	public static boolean FLAG = true;//是否警报状态
+	public static int DANGER = 0;
+	public static int WIFI = 0;
+	public static int SPEED = 0;
+	
+	
+	public static List<Map<String, Object>> bluetoothGattList = null;	
 	public synchronized static BaseApplication getInstance() {
 		return myApplication;
 	}
@@ -59,6 +71,7 @@ public class BaseApplication extends Application {
 	private void initData() {
 		userPreference = new UserPreference(this);
 		//		messagePlayer = MediaPlayer.create(this, R.raw.office);
+		
 	}
 
 	/**
@@ -76,7 +89,12 @@ public class BaseApplication extends Application {
 			userPreference = new UserPreference(this);
 		return userPreference;
 	}
-
+	public synchronized List<Map<String, Object>> getbluetoothGatt() {
+		if (bluetoothGattList == null)
+			bluetoothGattList = new ArrayList<>();
+		return bluetoothGattList;
+	}
+	
 	/** 
 	 * 取得DaoMaster 
 	 *  

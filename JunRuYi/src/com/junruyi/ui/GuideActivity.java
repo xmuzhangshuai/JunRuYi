@@ -1,14 +1,20 @@
 package com.junruyi.ui;
 
 import com.junruyi.base.BaseActivity;
+import com.junruyi.broadcast.BroadcastSpeed;
 import com.junruyi.db.CopyDataBase;
 import com.junruyi.service.BlueToothService;
+import com.junruyi.service.SpeedService;
+import com.junruyi.service.StepCounterService;
+import com.junruyi.ui.AddEquipmentActivity.MsgReceiver;
+import com.junruyi.utils.LogTool;
 import com.junruyi.utils.SharePreferenceUtil;
 import com.smallrhino.junruyi.R;
 import com.umeng.analytics.MobclickAgent;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -29,7 +35,7 @@ import android.widget.TextView;
 public class GuideActivity extends BaseActivity {
 	private SharePreferenceUtil sharePreferenceUtil;
 	private TextView versionInfotTextView;
-	Intent service = null;
+	Intent bluetooth = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -39,8 +45,22 @@ public class GuideActivity extends BaseActivity {
 		sharePreferenceUtil = new SharePreferenceUtil(this, SharePreferenceUtil.USE_COUNT);
 		int count = sharePreferenceUtil.getUseCount();
 
-		service = new Intent(this, BlueToothService.class);
-		startService(service);
+		
+		
+		Intent step = new Intent(this, StepCounterService.class);
+		startService(step);
+		
+		bluetooth = new Intent(this, BlueToothService.class);
+		startService(bluetooth);
+		
+//		Intent speed = new Intent(this, SpeedService.class);
+//		startService(speed);
+		// 动态注册广播接收器
+//		BroadcastSpeed broadcastSpeed = new BroadcastSpeed();
+//		IntentFilter intentFilter = new IntentFilter();
+//		intentFilter.addAction("com.xxn.speed");
+//		registerReceiver(broadcastSpeed, intentFilter);
+		
 		// 开启百度推送服务
 		// PushManager.startWork(getApplicationContext(),
 		// PushConstants.LOGIN_TYPE_API_KEY,

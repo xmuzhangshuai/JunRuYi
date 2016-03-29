@@ -87,6 +87,7 @@
             android:name="com.junruyi.ui.AddEquipmentActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
+ 		
         <service
             android:name="com.umeng.update.net.DownloadingService"
             android:process=":DownloadingService" >
@@ -96,13 +97,32 @@
             android:name="com.umeng.update.UpdateDialogActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
-        
+        <activity
+            android:name="com.junruyi.ui.AlarmActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        </activity>
         
         <service android:name="com.junruyi.service.BlueToothService" android:exported="false">
             <intent-filter >
                 <action android:name="com.junruyi.bluetooth"/>
             </intent-filter>
         </service>
+        <service android:name="com.junruyi.service.SpeedService" android:exported="false">
+            <intent-filter >
+                <action android:name="com.junruyi.speedservice"/>
+            </intent-filter>
+        </service>
+         <service android:name="com.junruyi.service.StepCounterService" android:exported="false">
+            <intent-filter >
+                <action android:name="com.junruyi.stepcounterservice"/>
+            </intent-filter>
+        </service>
+        
+        <receiver android:name="com.junruyi.broadcast.BroadcastSpeed">
+            <intent-filter>
+                <action android:name="com.xxn.speed"/>
+            </intent-filter>
+        </receiver>
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="YOUR_APP_KEY" >

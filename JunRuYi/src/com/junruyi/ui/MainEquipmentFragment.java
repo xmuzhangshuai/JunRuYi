@@ -12,6 +12,7 @@ import com.smallrhino.junruyi.R;
 import android.R.string;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -49,13 +50,18 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 		rootView = inflater.inflate(R.layout.fragment_equipment, container, false);
 		equipmentDbService = EquipmentDbService.getInstance(getActivity());
 		
-		initEquipmentList();
-		findViewById();// 初始化views
-		initView();
 
 		return rootView;
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		initEquipmentList();
+		findViewById();// 初始化views
+		initView();
+	}
 	@Override
 	protected void findViewById() {
 		equipMentListView = (ListView) rootView.findViewById(R.id.equipment_list);
