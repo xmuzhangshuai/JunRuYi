@@ -62,7 +62,7 @@ public class StepCounterService extends Service {
 				intent.putExtra("danger", velocity);
 				sendBroadcast(intent);
 			}
-			System.out.println("velocity:"+velocity+"--total_step:"+total_step);
+			//System.out.println("velocity:"+velocity+"--total_step:"+total_step);
 		}
 	};
 	@Override

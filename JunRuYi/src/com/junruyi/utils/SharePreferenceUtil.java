@@ -6,9 +6,9 @@ import android.content.SharedPreferences;
 /**
  * 类名称：SharePreferenceUtil 
  * 类描述：SharedPreferences的一个工具类，调用setParam就能保存String,
- * Integer, Boolean, Float, Long类型的参�?同样调用getParam就能获取到保存在手机里面的数�?
+ * Integer, Boolean, Float, Long类型的参�?同样调用getParam就能获取到保存在手机里面的数�?
  * 创建人： 张帅
- * 创建时间�?015�?�?3�?上午9:00:37
+ * 创建时间�?015�?�?3�?上午9:00:37
  * 
  */
 public class SharePreferenceUtil {

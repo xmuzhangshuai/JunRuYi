@@ -45,8 +45,6 @@ public class GuideActivity extends BaseActivity {
 		sharePreferenceUtil = new SharePreferenceUtil(this, SharePreferenceUtil.USE_COUNT);
 		int count = sharePreferenceUtil.getUseCount();
 
-		
-		
 		Intent step = new Intent(this, StepCounterService.class);
 		startService(step);
 		

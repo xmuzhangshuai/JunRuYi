@@ -34,6 +34,8 @@ public class UserPreference {
 		editor.commit();
 	}
 	
+	
+	
 //	/**
 //	 * ������
 //	 */

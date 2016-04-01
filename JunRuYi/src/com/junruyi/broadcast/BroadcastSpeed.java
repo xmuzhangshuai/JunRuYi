@@ -22,5 +22,4 @@ public class BroadcastSpeed extends BroadcastReceiver{
 			context.startActivity(i);
 		}
 	}
-
 }
