@@ -3,6 +3,7 @@ package com.junruyi.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.R.bool;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
@@ -93,7 +94,7 @@ public class BlueToothService extends Service {
 		super.onDestroy();
 	}
 
-	private void scanLeDevice(final boolean enable) {
+	public void scanLeDevice(final boolean enable) {
 		if (enable) {
 			mHandler.postDelayed(new Runnable() {
 				@Override
@@ -115,9 +116,10 @@ public class BlueToothService extends Service {
 	 * 搜索到BLE终端服务的事件
 	 */
 	private BluetoothLeClass.OnServiceDiscoverListener mOnServiceDiscover = new OnServiceDiscoverListener() {
+		
 		@Override
 		public void onServiceDiscover(BluetoothGatt gatt) {
-
+			
 			displayGattServices(mBLE.getSupportedGattServices());
 			mBLE.readBattery();
 			// int ss = mBLE.getRssi();
@@ -278,5 +280,6 @@ public class BlueToothService extends Service {
 	public static boolean connect(String address) {
 		return mBLE.connect(address);
 	}
+	
 
 }

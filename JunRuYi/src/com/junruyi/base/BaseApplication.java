@@ -46,8 +46,6 @@ public class BaseApplication extends Application {
 	public static int DANGER = 0;
 	public static int WIFI = 0;
 	public static int SPEED = 0;
-	
-	
 	public static List<Map<String, Object>> bluetoothGattList = null;	
 	public synchronized static BaseApplication getInstance() {
 		return myApplication;
@@ -89,6 +87,8 @@ public class BaseApplication extends Application {
 			userPreference = new UserPreference(this);
 		return userPreference;
 	}
+	
+	
 	public synchronized List<Map<String, Object>> getbluetoothGatt() {
 		if (bluetoothGattList == null)
 			bluetoothGattList = new ArrayList<>();

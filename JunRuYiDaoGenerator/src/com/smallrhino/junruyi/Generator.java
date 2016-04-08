@@ -36,14 +36,15 @@ public class Generator {
 		/****添加丢失信息*******/
 		Entity locationEntity = schema.addEntity("Location");
 		locationEntity.addIdProperty().autoincrement();
+		locationEntity.addStringProperty("name");//设备名称
 		locationEntity.addStringProperty("latitude");//纬度
 		locationEntity.addStringProperty("longtitude");//经度
 		locationEntity.addStringProperty("address");
 		locationEntity.addDateProperty("losetime");
 		//设备外键
-		Property location_equipment_id = locationEntity.addLongProperty("EquipMentID").notNull().getProperty();
-		locationEntity.addToOne(equipMentEntity, location_equipment_id);
-		ToMany equipMentToLocation = equipMentEntity.addToMany(locationEntity, location_equipment_id);
-		equipMentToLocation.setName("locationList");
+//		Property location_equipment_id = locationEntity.addStringProperty("EquipMentID").notNull().getProperty();
+//		locationEntity.addToOne(equipMentEntity, location_equipment_id);
+//		ToMany equipMentToLocation = equipMentEntity.addToMany(locationEntity, location_equipment_id);
+//		equipMentToLocation.setName("locationList");
 	}
 }

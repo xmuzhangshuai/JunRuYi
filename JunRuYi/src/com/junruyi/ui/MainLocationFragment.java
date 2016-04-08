@@ -2,16 +2,24 @@ package com.junruyi.ui;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.junruyi.base.BaseApplication;
 import com.junruyi.base.BaseV4Fragment;
 import com.junruyi.customewidget.MyAlertDialog;
+import com.junruyi.db.EquipmentDbService;
+import com.junruyi.db.LocationDbService;
+import com.junruyi.entities.EquipMent;
 import com.junruyi.entities.Location;
+import com.junruyi.ui.AddEquipmentActivity.MsgReceiver;
 import com.junruyi.utils.DateTimeTools;
 import com.smallrhino.junruyi.R;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,18 +42,20 @@ public class MainLocationFragment extends BaseV4Fragment {
 	private ListView locationListView;
 	private List<Location> dataList;
 	private TextView cleanBtn;
-
+	
+	LocationAdapter locationAdapter;
+	
+	private LocationDbService locationDbService;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		locationDbService = LocationDbService.getInstance(getActivity());
 		rootView = inflater.inflate(R.layout.fragment_location, container, false);
 		initLocationList();
 		findViewById();// 初始化views
 		initView();
-
 		return rootView;
 	}
-
 	@Override
 	protected void findViewById() {
 		// TODO Auto-generated method stub
@@ -56,7 +66,8 @@ public class MainLocationFragment extends BaseV4Fragment {
 	@Override
 	protected void initView() {
 		// TODO Auto-generated method stub
-		locationListView.setAdapter(new LocationAdapter());
+		locationAdapter = new LocationAdapter();
+		locationListView.setAdapter(locationAdapter);
 		cleanBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -66,7 +77,6 @@ public class MainLocationFragment extends BaseV4Fragment {
 			}
 		});
 	}
-
 	/**
 	 * 退出登录
 	 */
@@ -104,16 +114,17 @@ public class MainLocationFragment extends BaseV4Fragment {
 	 */
 	private void initLocationList() {
 		dataList = new ArrayList<>();
-
-		Location l1 = new Location(Long.valueOf(1), "北纬34.45’33", "东经113.02'07", "厦门市厦门大学三家村广场", new Date(), 1);
-		Location l2 = new Location(Long.valueOf(2), "北纬34.45’33", "东经113.02'07", "厦门市思明区思明南路442号", new Date(), 2);
-		Location l3 = new Location(Long.valueOf(3), "北纬34.45’33", "东经113.02'07", "厦门市龙虎山路134号", new Date(), 3);
-		Location l4 = new Location(Long.valueOf(4), "北纬34.45’33", "东经113.02'07", "厦门市吕岭路109号", new Date(), 4);
-		dataList.add(l1);
-		dataList.add(l2);
-		dataList.add(l3);
-		dataList.add(l4);
+		dataList = locationDbService.getLocationList();
+//		Location l1 = new Location(Long.valueOf(1),"书包", "北纬34.45’33", "东经113.02'07", "厦门市厦门大学三家村广场", new Date(), 1);
+//		Location l2 = new Location(Long.valueOf(2),"钱包", "北纬34.45’33", "东经113.02'07", "厦门市思明区思明南路442号", new Date(), 2);
+//		Location l3 = new Location(Long.valueOf(3), "钱包","北纬34.45’33", "东经113.02'07", "厦门市龙虎山路134号", new Date(), 3);
+//		Location l4 = new Location(Long.valueOf(4),"钱包", "北纬34.45’33", "东经113.02'07", "厦门市吕岭路109号", new Date(), 4);
+//		dataList.add(l1);
+//		dataList.add(l2);
+//		dataList.add(l3);
+//		dataList.add(l4);
 	}
+	
 
 	/**
 	 * @description:
@@ -171,12 +182,11 @@ public class MainLocationFragment extends BaseV4Fragment {
 			} else {
 				holder = (ViewHolder) view.getTag(); // 把数据取出来
 			}
-
 			holder.image.setImageResource(R.drawable.bag);
-			holder.nameTextView.setText("书包");
-			holder.datextView.setText(DateTimeTools.getCurrentDateTimeForString());
-			holder.longlatiTextView.setText("定位：  " + location.getLatitude() + location.getLongtitude());
-			holder.addressTextView.setText("地点：  " + location.getAddress());
+			holder.nameTextView.setText(location.getName());
+			holder.datextView.setText(DateTimeTools.DateToString(location.getLosetime()));
+			holder.longlatiTextView.setText("纬度:  " + location.getLatitude() + "经度: "+location.getLongtitude());
+			holder.addressTextView.setText("地点:  " + location.getAddress());
 			return view;
 		}
 	}

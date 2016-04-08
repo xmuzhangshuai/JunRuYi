@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.junruyi.base.BaseApplication;
+import com.smallrhino.junruyi.R;
 
 import android.R.string;
 import android.bluetooth.BluetoothAdapter;
@@ -33,6 +34,9 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.provider.MediaStore.Audio.Media;
 import android.util.Log;
 
 /**
@@ -113,7 +117,14 @@ public class BluetoothLeClass {
 			} else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
 				if (mOnDisconnectListener != null)
 					mOnDisconnectListener.onDisconnect(gatt);
+				
+				Intent locationintent = new Intent();
+				locationintent.setAction("com.xxn.location");
+				String addr = mBluetoothGatt.getDevice().getAddress();
+				locationintent.putExtra("addr", addr);
+				mContext.sendBroadcast(locationintent);
 				Log.i(TAG, "Disconnected from GATT server.");
+				
 			}
 		}
 
@@ -121,6 +132,11 @@ public class BluetoothLeClass {
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 			if (status == BluetoothGatt.GATT_SUCCESS
 					&& mOnServiceDiscoverListener != null) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				mOnServiceDiscoverListener.onServiceDiscover(gatt);
 			} else {
 				Log.w(TAG, "onServicesDiscovered received: " + status);
@@ -252,6 +268,7 @@ public class BluetoothLeClass {
 		mBluetoothGatt.close();
 		mBluetoothGatt = null;
 	}
+	
 
 	/**
 	 * Request a read on a given {@code BluetoothGattCharacteristic}. The read
@@ -312,7 +329,7 @@ public class BluetoothLeClass {
 	public void getRssi() {
 		mBluetoothGatt.readRemoteRssi();
 	}
-
+	
 	/**
 	 * 获取电池电量
 	 */

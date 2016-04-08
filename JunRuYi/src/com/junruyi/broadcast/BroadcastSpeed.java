@@ -6,20 +6,25 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class BroadcastSpeed extends BroadcastReceiver{
+public class BroadcastSpeed extends BroadcastReceiver {
 
-	private Intent i = new Intent();
+	private Intent alarm = new Intent();
 	public static boolean FLAG = true;
+	String addr = "";
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		double danger = intent.getDoubleExtra("danger", -1.0d);
-		System.out.println("danger"+danger);
-		if(danger >= 1 && FLAG)
-		{
+		addr = intent.getStringExtra("addr");
+		if (null == addr)
+			addr = "";
+		System.out.println("danger" + danger);
+		if (danger >= 1.0d && FLAG) {
 			FLAG = false;
-			i.setClass(context, AlarmActivity.class);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
-			context.startActivity(i);
+			alarm.setClass(context, AlarmActivity.class);
+			alarm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			alarm.putExtra("addr", addr);
+			context.startActivity(alarm);
 		}
 	}
 }

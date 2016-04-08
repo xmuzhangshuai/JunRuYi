@@ -29,8 +29,6 @@ public class EquipMentDao extends AbstractDao<EquipMent, Long> {
         public final static Property EquipMentLogo = new Property(3, Integer.class, "equipMentLogo", false, "EQUIP_MENT_LOGO");
     };
 
-    private DaoSession daoSession;
-
 
     public EquipMentDao(DaoConfig config) {
         super(config);
@@ -38,7 +36,6 @@ public class EquipMentDao extends AbstractDao<EquipMent, Long> {
     
     public EquipMentDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -81,12 +78,6 @@ public class EquipMentDao extends AbstractDao<EquipMent, Long> {
         if (equipMentLogo != null) {
             stmt.bindLong(4, equipMentLogo);
         }
-    }
-
-    @Override
-    protected void attachEntity(EquipMent entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
     }
 
     /** @inheritdoc */

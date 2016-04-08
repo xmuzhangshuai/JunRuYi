@@ -70,5 +70,8 @@ public class EquipmentDbService {
 	public EquipMent getEquipMentByid(String id){
 		return equipmentDao.queryBuilder().where(Properties.Id.eq(id)).unique();
 	}
+	public EquipMent getEquipMentByAddr(String addr){
+		return equipmentDao.queryBuilder().where(Properties.EquipMentAddress.eq(addr)).unique();
+	}
 
 }

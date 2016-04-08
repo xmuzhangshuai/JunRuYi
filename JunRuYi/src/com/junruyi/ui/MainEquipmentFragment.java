@@ -49,8 +49,6 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_equipment, container, false);
 		equipmentDbService = EquipmentDbService.getInstance(getActivity());
-		
-
 		return rootView;
 	}
 
@@ -98,6 +96,7 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 	 */
 	private void initEquipmentList() {
 		dataList = equipmentDbService.getEquipMentList();
+//		new BlueToothService().scanLeDevice(false);
 		for(EquipMent e: dataList){
 			if(BlueToothService.connect(e.getEquipMentAddress())){
 				e.setEquipMentLogo(R.drawable.logo2);
