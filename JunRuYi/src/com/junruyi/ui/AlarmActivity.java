@@ -13,7 +13,6 @@ import android.view.WindowManager;
 
 import com.junruyi.broadcast.BroadcastSpeed;
 import com.junruyi.customewidget.MyAlertDialog;
-import com.junruyi.service.SpeedService;
 import com.smallrhino.junruyi.R;
 
 public class AlarmActivity extends Activity{
@@ -47,7 +46,7 @@ public class AlarmActivity extends Activity{
 
 			@Override
 			public void onClick(View v) {
-				SpeedService.danger = 0;
+//				SpeedService.danger = 0;
 				mediaPlayer.stop();
 				myAlertDialog.dismiss();
 				finish();

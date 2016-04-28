@@ -6,9 +6,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import com.junruyi.entities.EquipMent;
+import com.junruyi.entities.Location;
+import com.junruyi.ui.MainActivity.DisconnectReceiver;
 import com.smallrhino.junruyi.R;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
@@ -24,6 +31,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class CameraDemoActivity extends Activity{
 
@@ -33,6 +41,7 @@ public class CameraDemoActivity extends Activity{
 	private Camera camera;
 	private File picture;
 	private Button btnSave;
+	private TakePhotoReceiver takePhotoReceiver;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +50,11 @@ public class CameraDemoActivity extends Activity{
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 		setupViews();
+		//注册蓝牙广播拍照
+		takePhotoReceiver = new TakePhotoReceiver();
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction("com.xxn.takephoto");
+		registerReceiver(takePhotoReceiver, intentFilter);
 	}
 	
 	private void setupViews(){
@@ -71,7 +85,7 @@ public class CameraDemoActivity extends Activity{
 		return super.onKeyDown(keyCode, event);
 	}
 
-	private void takePic() {
+	public void takePic() {
 
 		camera.stopPreview();// stop the preview
 
@@ -142,4 +156,13 @@ public class CameraDemoActivity extends Activity{
 			camera = null;
 		}
 	};
+	public class TakePhotoReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// 拿到数据
+			Toast.makeText(CameraDemoActivity.this, "蓝牙拍照", Toast.LENGTH_LONG).show();
+			takePic();
+		}
+	}
 }

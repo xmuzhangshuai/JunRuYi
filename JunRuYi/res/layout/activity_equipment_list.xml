@@ -5,14 +5,11 @@
     android:background="@drawable/back"
     android:orientation="vertical" >
 
-    <include layout="@layout/top_navigation" />
-
-    <ListView
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/add_equipment_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@color/system_gray"
-        android:dividerHeight="0.5dp" >
-    </ListView>
+        android:dividerHeight="0.5dp" />
 
 </LinearLayout>

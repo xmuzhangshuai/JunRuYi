@@ -112,7 +112,7 @@
             android:layout_marginTop="@dimen/new_msg"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/motify_data_space"
-            android:text="添加设备"
+            android:text="设置紧急呼叫号码"
             android:textSize="14sp" />
 
         <View

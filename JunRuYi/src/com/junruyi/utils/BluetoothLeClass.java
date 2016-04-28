@@ -16,15 +16,10 @@
 
 package com.junruyi.utils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import com.junruyi.base.BaseApplication;
-import com.smallrhino.junruyi.R;
 
-import android.R.string;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -50,6 +45,7 @@ public class BluetoothLeClass {
 	private BluetoothAdapter mBluetoothAdapter;
 	private String mBluetoothDeviceAddress;
 	private BluetoothGatt mBluetoothGatt;
+	
 
 	public interface OnConnectListener {
 		public void onConnect(BluetoothGatt gatt);
@@ -118,13 +114,23 @@ public class BluetoothLeClass {
 				if (mOnDisconnectListener != null)
 					mOnDisconnectListener.onDisconnect(gatt);
 				
+				//发送断开连接广播
+				
+				String addr = mBluetoothGatt.getDevice().getAddress();
+				
+				//MainEquipmentFragment
+				Intent disconnect = new Intent();
+				disconnect.setAction("com.xxn.disconnect");
+				disconnect.putExtra("addr", addr);
+				mContext.sendBroadcast(disconnect);
+				
+				//MainActivity
 				Intent locationintent = new Intent();
 				locationintent.setAction("com.xxn.location");
-				String addr = mBluetoothGatt.getDevice().getAddress();
 				locationintent.putExtra("addr", addr);
 				mContext.sendBroadcast(locationintent);
-				Log.i(TAG, "Disconnected from GATT server.");
 				
+				Log.i(TAG, "Disconnected from GATT server.");
 			}
 		}
 
@@ -218,6 +224,7 @@ public class BluetoothLeClass {
 			Log.d(TAG,
 					"Trying to use an existing mBluetoothGatt for connection.");
 			if (mBluetoothGatt.connect()) {
+				System.out.println("return true");
 				// Map<String, Object> map = new HashMap<>();
 				// map.put("gatt", mBluetoothGatt);
 				// map.put("addr", mBluetoothDeviceAddress);
@@ -239,8 +246,11 @@ public class BluetoothLeClass {
 		// parameter to false.
 		mBluetoothGatt = device.connectGatt(mContext, false, mGattCallback);
 		Log.d(TAG, "Trying to create a new connection.");
-		mBluetoothDeviceAddress = address;
-		return true;
+		if(mBluetoothGatt!=null){
+			mBluetoothDeviceAddress = address;
+			return true;
+		}
+		else return false;
 	}
 
 	/**
@@ -268,7 +278,6 @@ public class BluetoothLeClass {
 		mBluetoothGatt.close();
 		mBluetoothGatt = null;
 	}
-	
 
 	/**
 	 * Request a read on a given {@code BluetoothGattCharacteristic}. The read
@@ -329,7 +338,7 @@ public class BluetoothLeClass {
 	public void getRssi() {
 		mBluetoothGatt.readRemoteRssi();
 	}
-	
+
 	/**
 	 * 获取电池电量
 	 */
@@ -342,6 +351,35 @@ public class BluetoothLeClass {
 							.fromString("00002a19-0000-1000-8000-00805f9b34fb"));
 			if (batteryCharacteristic != null) {
 				mBluetoothGatt.readCharacteristic(batteryCharacteristic);
+			}
+		}
+	}
+
+	BluetoothGattService alertService = null;
+	BluetoothGattCharacteristic alertCharacteristic = null;
+	public void baojing() {
+		LogTool.e("报警");
+		alertService = mBluetoothGatt.getService(UUID
+				.fromString("00001802-0000-1000-8000-00805f9b34fb"));
+		if (alertService != null) {
+			alertCharacteristic = alertService.getCharacteristic(UUID
+					.fromString("00002a06-0000-1000-8000-00805f9b34fb"));
+			if (alertCharacteristic != null) {
+				alertCharacteristic.setValue("2");
+				mBluetoothGatt.writeCharacteristic(alertCharacteristic);
+			}
+		}
+	}
+	public void cancelbaojing() {
+		LogTool.e("取消报警");
+		alertService = mBluetoothGatt.getService(UUID
+				.fromString("00001802-0000-1000-8000-00805f9b34fb"));
+		if (alertService != null) {
+			alertCharacteristic = alertService.getCharacteristic(UUID
+					.fromString("00002a06-0000-1000-8000-00805f9b34fb"));
+			if (alertCharacteristic != null) {
+				alertCharacteristic.setValue("0");
+				mBluetoothGatt.writeCharacteristic(alertCharacteristic);
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.R.bool;
+import android.app.ActivityManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
@@ -14,34 +15,44 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.telephony.SmsManager;
 import android.widget.Toast;
 
+import com.junruyi.base.BaseApplication;
 import com.junruyi.db.EquipmentDbService;
 import com.junruyi.entities.EquipMent;
+import com.junruyi.ui.AlarmActivity;
+import com.junruyi.ui.RectPhoto;
 import com.junruyi.utils.BluetoothLeClass;
 import com.junruyi.utils.BluetoothLeClass.OnDataAvailableListener;
 import com.junruyi.utils.BluetoothLeClass.OnServiceDiscoverListener;
+import com.junruyi.utils.LocationTool;
 import com.junruyi.utils.LogTool;
+import com.junruyi.utils.UserPreference;
 import com.junruyi.utils.Utils;
 
 public class BlueToothService extends Service {
 
+	
+	private UserPreference userPreference;
 	private EquipmentDbService equipmentDbService;
 	private List<EquipMent> list = null;
 	private final static String TAG = BlueToothService.class.getSimpleName();
 	private final static String UUID_KEY_DATA = "0000ffe1-0000-1000-8000-00805f9b34fb";
-	private final static String PASS_KEY_DATA = "0000ffe2-0000-1000-8000-00805f9b34fb";
+	private final static String PASS_KEY_DATA = "00002a06-0000-1000-8000-00805f9b34fb";
 	private final static String BATTERY_KEY_DATA = "00002a19-0000-1000-8000-00805f9b34fb";
 	private boolean mScanning;
 	private Handler mHandler;
 	private BluetoothAdapter mBluetoothAdapter;
 	private static BluetoothLeClass mBLE;
 
+	private long lasttime = 0,nowtime =0 ;
 	private static final long SCAN_PERIOD = 10000;
-
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -51,6 +62,9 @@ public class BlueToothService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		LogTool.e("执行BluetoothService");
+		userPreference = BaseApplication.getInstance().getUserPreference();
+		
 		equipmentDbService = EquipmentDbService
 				.getInstance(BlueToothService.this);
 		list = equipmentDbService.getEquipMentList();
@@ -82,7 +96,7 @@ public class BlueToothService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		System.out.println("onStart");
-
+		LogTool.e("执行BluetoothService-onStartCommand");
 		// 开始搜索蓝牙设备
 		scanLeDevice(true);
 		return START_STICKY;
@@ -116,13 +130,12 @@ public class BlueToothService extends Service {
 	 * 搜索到BLE终端服务的事件
 	 */
 	private BluetoothLeClass.OnServiceDiscoverListener mOnServiceDiscover = new OnServiceDiscoverListener() {
-		
+
 		@Override
 		public void onServiceDiscover(BluetoothGatt gatt) {
-			
+
 			displayGattServices(mBLE.getSupportedGattServices());
 			mBLE.readBattery();
-			// int ss = mBLE.getRssi();
 			mBLE.getRssi();
 		}
 	};
@@ -135,7 +148,7 @@ public class BlueToothService extends Service {
 		/**
 		 * 收到BLE终端写入数据回调,操作蓝牙模块
 		 */
-		
+
 		@Override
 		public void onCharacteristicWrite(BluetoothGatt gatt,
 				BluetoothGattCharacteristic characteristic) {
@@ -145,19 +158,53 @@ public class BlueToothService extends Service {
 					+ Utils.bytesToHexString(characteristic.getValue()));
 
 			if (Utils.bytesToHexString(characteristic.getValue()).equals("01")) {
-				LogTool.i(TAG, "拍照");
-				// 先切换一下
-				// 完成快捷呼叫功能
+				nowtime = System.currentTimeMillis();
+				long dex = nowtime - lasttime;
+				if(dex < 1000)
+				{
+					System.out.println("1s内");
+					LogTool.i(TAG, "报警");
+					Intent alarm = new Intent();
+					alarm.setClass(getApplicationContext(), AlarmActivity.class);
+					alarm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					getApplicationContext().startActivity(alarm);
+				}
+				else{
+					lasttime = nowtime;
+					if(getRunningActivityName().equals("com.junruyi.ui.RectPhoto")){
+						System.out.println("执行自拍操作");
+						Intent cameraintent = new Intent();
+						cameraintent.setAction("com.xxn.camera");
+						sendBroadcast(cameraintent);
+					}
+//					System.out.println();
+				}
 
-				Intent phone = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"
-						+ "18046175915"));
-				phone.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-						| Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-				startActivity(phone);
 			}
 			if (Utils.bytesToHexString(characteristic.getValue()).equals("05")) {
-				LogTool.i(TAG, "呼叫");
-			}
+				// 长按5秒拨打电话
+				LogTool.i(TAG, "拨打电话");
+				String tel = userPreference.getU_tel();
+				if(tel==null||tel.isEmpty()){
+					LogTool.i(TAG, "请设置正确的拨打电话");
+				}
+				else{
+					
+					Intent phone = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"
+							+ tel));
+					phone.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+							| Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+					
+					LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+					String content = new LocationTool(getApplicationContext(),locationManager).getAddrString();
+					SmsManager sms = SmsManager.getDefault();
+					sms.sendTextMessage(tel, null, "我现在在"+content, null, null);
+					
+					startActivity(phone);
+					
+				}
+				
+			} 
 			LogTool.i("==" + Utils.bytesToHexString(characteristic.getValue()));
 		}
 
@@ -234,15 +281,12 @@ public class BlueToothService extends Service {
 
 				// 非常关键的一步，让Characteristic可以接受被写入的功能
 				mBLE.setCharacteristicNotification(gattCharacteristic, true);
-
-				// if(gattCharacteristic.getUuid().toString().equals(PASS_KEY_DATA)){
-				// gattCharacteristic.setValue("01FE00660065");
-				// //设置数据内容
-				// Log.i("~~~~~~", "取消密码");
-				// //往蓝牙模块写入数据
-				// mBLE.writeCharacteristic(gattCharacteristic);
-				// }
-
+//
+//				 if(gattCharacteristic.getUuid().toString().equals(PASS_KEY_DATA)){
+//				 gattCharacteristic.setValue("0x02");
+//				 //往蓝牙模块写入数据
+//				 mBLE.writeCharacteristic(gattCharacteristic);
+//				 }
 			}
 
 		}
@@ -257,7 +301,8 @@ public class BlueToothService extends Service {
 			boolean flag = true;
 			for (int i = 0; i < list.size(); i++) {
 				System.out.println("addr:" + device.getAddress());
-				if (list.get(i).getEquipMentAddress().equals(device.getAddress())) {
+				if (list.get(i).getEquipMentAddress()
+						.equals(device.getAddress())) {
 					flag = false;
 				}
 			}
@@ -272,8 +317,6 @@ public class BlueToothService extends Service {
 			} else {
 				LogTool.i("数据库已经有了..");
 			}
-			// mBluetoothAdapter.stopLeScan(mLeScanCallback);
-			// mBLE.connect(device.getAddress());
 		}
 	};
 
@@ -281,5 +324,27 @@ public class BlueToothService extends Service {
 		return mBLE.connect(address);
 	}
 	
+	public static void baojing(){
+		mBLE.baojing();
+	}
+	public static void cancelbaojing(){
+		mBLE.cancelbaojing();
+	}
+
+	public String getRunningActivityName() {
+		ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		String runningActivity = activityManager.getRunningTasks(1).get(0).topActivity
+				.getClassName();
+		return runningActivity;
+	}
+	public class MsgBinder extends Binder{  
+        /** 
+         * 获取当前Service的实例 
+         * @return 
+         */  
+        public BlueToothService getService(){  
+            return BlueToothService.this;  
+        }  
+    }  
 
 }

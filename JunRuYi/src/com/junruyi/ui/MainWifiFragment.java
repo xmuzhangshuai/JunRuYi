@@ -8,10 +8,13 @@ import com.junruyi.customewidget.MyAlertDialog;
 import com.junruyi.db.WifiDbService;
 import com.junruyi.entities.Wifi;
 import com.junruyi.utils.LogTool;
+import com.junruyi.utils.WifiUtil;
 import com.smallrhino.junruyi.R;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +24,12 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @description:Wifi列表
@@ -39,24 +44,30 @@ public class MainWifiFragment extends BaseV4Fragment {
 	private List<Wifi> dataList;
 	private WifiDbService wifiDbService;
 	private WifiAdapter wifiAdapter;
-
+	private WifiUtil wifiUtil;
+	private View addwifiView;
+	int nowWiFiLocation = -1;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		rootView = inflater.inflate(R.layout.fragment_wifi, container, false);
 		wifiDbService = WifiDbService.getInstance(getActivity());
 
+		return rootView;
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
 		initWifiList();
 		findViewById();// 初始化views
 		initView();
-
-		return rootView;
 	}
 
 	@Override
 	protected void findViewById() {
 		// TODO Auto-generated method stub
 		wifiListView = (ListView) rootView.findViewById(R.id.wifi_list);
+		addwifiView = (View) rootView.findViewById(R.id.addwifi);
 	}
 
 	@Override
@@ -64,6 +75,12 @@ public class MainWifiFragment extends BaseV4Fragment {
 		// TODO Auto-generated method stub
 		wifiAdapter = new WifiAdapter();
 		wifiListView.setAdapter(wifiAdapter);
+//		if(nowWiFiLocation != -1){
+//			wifiListView.getChildAt(nowWiFiLocation).setBackgroundColor(Color.GRAY);
+////			View view = wifiListView.getChildAt(nowWiFiLocation);
+////			view.setBackgroundResource(R.color.dark_gray);	
+//		}
+		
 		//wifilist单击事件
 		wifiListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -101,29 +118,33 @@ public class MainWifiFragment extends BaseV4Fragment {
 				return true;
 			}
 		});
+		
+		addwifiView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(), WiFiListActivity.class);
+				startActivity(intent);
+			}
+		});
 	}
 
 	/**
 	 * 初始化数据
 	 */
 	private void initWifiList() {
+		wifiUtil = new WifiUtil(getActivity());
 		dataList = new ArrayList<>();
 		dataList = wifiDbService.getWifiList();
-		for (Wifi wifi : dataList) {
-			if (wifi != null) {
-				LogTool.e("------" + wifi.getBssid() + wifi.getWifiName());
+		for (int i =0;i < dataList.size();i++) {
+			if (dataList.get(i) != null) {
+				if(wifiUtil.getBSSID().equals(dataList.get(i).getBssid()))
+				{
+					nowWiFiLocation = i;
+					System.out.println("nowWiFiLocation"+nowWiFiLocation);
+					break;
+				}
 			}
 		}
-		//		Wifi w1 = new Wifi(Long.valueOf(1), "510", "1");
-		//		Wifi w2 = new Wifi(Long.valueOf(1), "TP_LINK_242", "1");
-		//		Wifi w3 = new Wifi(Long.valueOf(1), "办公室", "1");
-		//		Wifi w4 = new Wifi(Long.valueOf(1), "家", "1");
-		//		Wifi w5 = new Wifi(Long.valueOf(1), "509", "1");
-		//		dataList.add(w1);
-		//		dataList.add(w2);
-		//		dataList.add(w3);
-		//		dataList.add(w4);
-		//		dataList.add(w5);
 	}
 
 	/**
@@ -180,7 +201,7 @@ public class MainWifiFragment extends BaseV4Fragment {
 				holder = (ViewHolder) view.getTag(); // 把数据取出来
 			}
 
-			if (position == 1) {
+			if (position == nowWiFiLocation) {
 				holder.checkImage.setImageResource(R.drawable.logo1);
 				holder.checkImage.setVisibility(View.VISIBLE);
 			} else {

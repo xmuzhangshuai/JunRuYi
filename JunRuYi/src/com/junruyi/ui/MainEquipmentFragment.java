@@ -2,26 +2,18 @@ package com.junruyi.ui;
 
 import java.util.List;
 
-import com.junruyi.base.BaseV4Fragment;
-import com.junruyi.customewidget.MyAlertDialog;
-import com.junruyi.db.EquipmentDbService;
-import com.junruyi.entities.EquipMent;
-import com.junruyi.service.BlueToothService;
-import com.smallrhino.junruyi.R;
-
-import android.R.string;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.SoundPool;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -30,6 +22,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.junruyi.base.BaseV4Fragment;
+import com.junruyi.customewidget.MyAlertDialog;
+import com.junruyi.db.EquipmentDbService;
+import com.junruyi.entities.EquipMent;
+import com.junruyi.service.BlueToothService;
+import com.junruyi.utils.LogTool;
+import com.smallrhino.junruyi.R;
 
 /**
  * @description:设备列表
@@ -42,9 +42,10 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 	public final static String TAG = "MainEquipmentFragment";
 	private View rootView;// 根View
 	private ListView equipMentListView;
+	private View addEquipmentView;
 	private List<EquipMent> dataList;
 	private EquipMentAdapter equipMentAdapter;
-	private SoundPool soundPool;
+	private MsgReceiver msgReceiver;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_equipment, container, false);
@@ -59,25 +60,22 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 		initEquipmentList();
 		findViewById();// 初始化views
 		initView();
+		// 动态注册广播接收器
+		msgReceiver = new MsgReceiver();
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction("com.xxn.disconnect");
+		getActivity().registerReceiver(msgReceiver, intentFilter);
 	}
 	@Override
 	protected void findViewById() {
 		equipMentListView = (ListView) rootView.findViewById(R.id.equipment_list);
+		addEquipmentView = (View) rootView.findViewById(R.id.addequipment);
 	}
 
 	@Override
 	protected void initView() {
 		equipMentAdapter = new EquipMentAdapter();
 		equipMentListView.setAdapter(equipMentAdapter);
-		
-		equipMentListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				EquipMent equipMent = dataList.get(position);
-				updateEquipMent(equipMent);
-			}
-		});
 		equipMentListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
@@ -87,8 +85,16 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 				return true;
 			}
 		});
-		soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
-		soundPool.load(getActivity(), R.raw.air, 1);
+		
+		addEquipmentView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(), EquipmentListActivity.class);
+				startActivity(intent);
+			}
+		});
+		
 	}
 
 	/**
@@ -99,9 +105,11 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 //		new BlueToothService().scanLeDevice(false);
 		for(EquipMent e: dataList){
 			if(BlueToothService.connect(e.getEquipMentAddress())){
+				LogTool.e("连接成功");
 				e.setEquipMentLogo(R.drawable.logo2);
 			}
 			else{
+				LogTool.e("连接失败");
 				e.setEquipMentLogo(R.drawable.logo3);
 			}
 		}
@@ -118,6 +126,7 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 			public ImageView imageView;
 			public TextView nameTextView;
 			public Button warnBtn;
+			public ImageView renameView;
 		}
 
 		@Override
@@ -150,6 +159,7 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 				holder.imageView = (ImageView) view.findViewById(R.id.image);
 				holder.nameTextView = (TextView) view.findViewById(R.id.name);
 				holder.warnBtn = (Button) view.findViewById(R.id.warnBtn);
+				holder.renameView = (ImageView) view.findViewById(R.id.rename);
 				view.setTag(holder); // 给View添加一个格外的数据
 			} else {
 				holder = (ViewHolder) view.getTag(); // 把数据取出来
@@ -157,31 +167,46 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 
 			holder.imageView.setImageResource(equipMent.getEquipMentLogo());
 			holder.nameTextView.setText(equipMent.getEquipMentName());
-			holder.warnBtn.setTag(position);
+//			holder.warnBtn.setTag(position);
 			holder.warnBtn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					System.err.println("postion:"+position);
 					String text = holder.warnBtn.getText().toString();
 					if(text.equals("报警"))
 					{
 						holder.warnBtn.setText("取消");
 						baojing(position);
 					}
-					else{
+					if(text.equals("连接"))
+					{
+//						rename();
+						Toast.makeText(getActivity(), "尝试连接操作...", Toast.LENGTH_SHORT).show();
+//						holder.warnBtn.setText("取消");
+//						baojing(position);
+					}
+					else if(text.equals("取消")){
 						holder.warnBtn.setText("报警");
 						cancelbaojing(position);
 					}
 				}
 			});
+			
+			holder.renameView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					EquipMent equipMent = dataList.get(position);
+					updateEquipMent(equipMent);
+				}
+			});
+			
 			return view;
 		}
 		public void baojing(int position){
-			Toast.makeText(getActivity(), "我要报警", Toast.LENGTH_LONG).show();
-			soundPool.play(1,1,1,0,0,1);
+			BlueToothService.baojing();
 		}
 		public void cancelbaojing(int position){
-			Toast.makeText(getActivity(), "取消报警", Toast.LENGTH_LONG).show();
-			soundPool.stop(1);
+			BlueToothService.cancelbaojing();
 		}
 	}
 	/**
@@ -241,4 +266,43 @@ public class MainEquipmentFragment extends BaseV4Fragment {
 		myAlertDialog.setNegativeButton("取消", cancel);
 		myAlertDialog.show();
 	}
+	
+	/**
+	 * 广播接收器
+	 * 
+	 * @author len
+	 * 
+	 */
+	private class MsgReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// 拿到数据
+			String addr = intent.getStringExtra("addr");
+			System.out.println(addr+"要改名和背景啦");
+			if (!addr.isEmpty()) {
+				int location =-1;
+				for(int i =0;i<dataList.size();i++){
+					if(dataList.get(i).getEquipMentAddress().equals(addr))
+					{
+						location = i;
+						break;
+					}
+				}
+				System.out.println("location:"+location);
+				View view = equipMentListView.getChildAt(location);
+				Button button = (Button) view.findViewById(R.id.warnBtn);
+				button.setText("连接");
+				view.setBackgroundResource(R.color.dark_gray);
+			}
+		}
+	}
+	
+	public void rename(){
+		View view = equipMentListView.getChildAt(0);
+		Button button = (Button) view.findViewById(R.id.warnBtn);
+		button.setText("连接");
+		view.setBackgroundResource(R.color.dark_gray);
+	}
+	
 }

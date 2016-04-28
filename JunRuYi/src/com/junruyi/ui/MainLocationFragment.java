@@ -12,7 +12,7 @@ import com.junruyi.db.EquipmentDbService;
 import com.junruyi.db.LocationDbService;
 import com.junruyi.entities.EquipMent;
 import com.junruyi.entities.Location;
-import com.junruyi.ui.AddEquipmentActivity.MsgReceiver;
+import com.junruyi.ui.EquipmentListActivity.MsgReceiver;
 import com.junruyi.utils.DateTimeTools;
 import com.smallrhino.junruyi.R;
 
@@ -25,6 +25,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -51,10 +53,14 @@ public class MainLocationFragment extends BaseV4Fragment {
 		// TODO Auto-generated method stub
 		locationDbService = LocationDbService.getInstance(getActivity());
 		rootView = inflater.inflate(R.layout.fragment_location, container, false);
+		return rootView;
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
 		initLocationList();
 		findViewById();// 初始化views
 		initView();
-		return rootView;
 	}
 	@Override
 	protected void findViewById() {
@@ -72,11 +78,27 @@ public class MainLocationFragment extends BaseV4Fragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				clean();
 			}
 		});
+		locationListView.setOnItemClickListener(new MyLocationListener());
 	}
+	
+	public class MyLocationListener implements OnItemClickListener{
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			Intent intent = new Intent(getActivity(), LocationActivity.class);
+			double longitude = Double.parseDouble(dataList.get(position).getLongtitude());
+			double latitude = Double.parseDouble(dataList.get(position).getLatitude());
+			intent.putExtra("longitude", longitude);
+			intent.putExtra("latitude", latitude);
+			startActivity(intent);
+		}
+		
+	}
+	
 	/**
 	 * 退出登录
 	 */
@@ -92,7 +114,6 @@ public class MainLocationFragment extends BaseV4Fragment {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				myAlertDialog.dismiss();
-
 			}
 		};
 		View.OnClickListener cancle = new OnClickListener() {

@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.junruyi.base.BaseFragmentActivity;
@@ -26,6 +27,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -55,9 +58,8 @@ public class MainActivity extends BaseFragmentActivity {
 	// 当前fragment的index
 	private int currentTabIndex = 0;
 	private Fragment[] fragments;
-	private WifiDbService wifiDbService;
+	
 	private LocationDbService locationDbService;
-	private WifiUtil wifiUtil;
 
 	private DisconnectReceiver disconnectReceiver;
 	private EquipmentDbService equipmentDbService;
@@ -84,8 +86,6 @@ public class MainActivity extends BaseFragmentActivity {
 				locationFragment, marketFragment, settingFragment };
 		findViewById();
 		initView();
-		showAddWifi();
-
 		// 丢失定位广播
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		equipmentDbService = EquipmentDbService.getInstance(this);
@@ -122,23 +122,6 @@ public class MainActivity extends BaseFragmentActivity {
 				.commit();
 	}
 
-	/**
-	 * 判断当前wifi是否需要添加到数据库
-	 */
-	private void showAddWifi() {
-		wifiDbService = WifiDbService.getInstance(MainActivity.this);
-		wifiUtil = new WifiUtil(this);
-		String bssid = wifiUtil.getBSSID();
-		String name = wifiUtil.getName();
-		if (!bssid.isEmpty()) {
-			long count = wifiDbService.countWifi();
-			Wifi temp = wifiDbService.getWifiByBssid(bssid);
-			if (count < 6 && temp == null) {
-				// 添加当前无线到安全wifi
-				addWifi(name, bssid);
-			}
-		}
-	}
 
 	/**
 	 * button点击事件
@@ -194,33 +177,7 @@ public class MainActivity extends BaseFragmentActivity {
 		currentTabIndex = index;
 	}
 
-	/**
-	 * 添加安全wifi的方法
-	 */
-	public void addWifi(final String wifiName, final String bssid) {
-		final MyAlertDialog myAlertDialog = new MyAlertDialog(this);
-		myAlertDialog.setTitle("提示");
-		myAlertDialog.setMessage("是否设置当前连接的wifi为安全？");
-		View.OnClickListener comfirm = new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				// 点击确认则做添加安全wifi操作
-				wifiDbService.addWifi(wifiName, bssid);
-				myAlertDialog.dismiss();
-			}
-		};
-		View.OnClickListener cancel = new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				myAlertDialog.dismiss();
-			}
-		};
-		myAlertDialog.setPositiveButton("确定", comfirm);
-		myAlertDialog.setNegativeButton("取消", cancel);
-		myAlertDialog.show();
-	}
+	
 
 	/**
 	 * 
@@ -241,6 +198,8 @@ public class MainActivity extends BaseFragmentActivity {
 				EquipMent e = equipmentDbService.getEquipMentByAddr(addr);
 				String name = e.getEquipMentName();
 				System.out.println("addr:" + addr + "name:" + name);
+				Toast.makeText(MainActivity.this, name + "断开了",
+						Toast.LENGTH_SHORT).show();
 				// 调用获取地理位置
 				getLocation();
 				String address = getAddr();
@@ -248,7 +207,6 @@ public class MainActivity extends BaseFragmentActivity {
 				Location location = new Location(i, name, latitude + "",
 						longitude + "", address, new Date());
 				locationDbService.addLocation(location);
-				
 				Intent speed = new Intent();
 				speed.setAction("com.xxn.speed");
 				speed.putExtra("danger", 2.0d);
@@ -256,9 +214,20 @@ public class MainActivity extends BaseFragmentActivity {
 			}
 		}
 	}
-	
-	public String getAddr(){
-		return "虚拟测试地址(经纬度真实)";
+
+	public String getAddr() {
+		Geocoder geocoder = new Geocoder(this, Locale.getDefault());  
+		Address addresses = null;
+		StringBuilder sb = new StringBuilder();  
+		try {
+			 addresses = geocoder.getFromLocation(latitude, longitude, 1).get(0);
+//			 for (int i = 0; i < addresses.getMaxAddressLineIndex(); i++) {  
+                 sb.append(addresses.getAddressLine(0)).append("\n");  
+//             }  
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return sb.toString();
 	}
 
 	private void getLocation() {
@@ -273,7 +242,7 @@ public class MainActivity extends BaseFragmentActivity {
 		}
 	}
 
-	LocationListener locationListener = new LocationListener() {
+	public LocationListener locationListener = new LocationListener() {
 		// Provider的状态在可用、暂时不可用和无服务三个状态直接切换时触发此函数
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -300,6 +269,7 @@ public class MainActivity extends BaseFragmentActivity {
 				longitude = location.getLongitude(); // 纬度
 			}
 		}
+		
 	};
 
 }

@@ -6,5 +6,8 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="src" path="/LanQuanLibrary"/>
+	<classpathentry kind="lib" path="D:/mycode/githome/LanQuan/LanQuan/lanquan/libs/BaiduLBS_Android.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/mycode/githome/JunRuYi/JunRuYi/libs/baidumapapi_v3_5_0.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

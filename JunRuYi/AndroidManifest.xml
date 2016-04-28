@@ -28,6 +28,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -79,14 +80,6 @@
             android:name="com.junruyi.ui.WebViewActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
-         <activity
-            android:name="com.junruyi.ui.CameraDemoActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-        </activity>
- 		<activity
-            android:name="com.junruyi.ui.AddEquipmentActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-        </activity>
  		
         <service
             android:name="com.umeng.update.net.DownloadingService"
@@ -101,6 +94,20 @@
             android:name="com.junruyi.ui.AlarmActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
+        <activity
+            android:name="com.junruyi.ui.WiFiListActivity">
+        </activity>
+        <activity
+            android:name="com.junruyi.ui.LocationActivity">
+        </activity>
+         <activity
+            android:name="com.junruyi.ui.RectPhoto">
+        </activity>
+ 		<activity
+            android:name="com.junruyi.ui.EquipmentListActivity">
+        </activity>
+        
+        
         
         <service android:name="com.junruyi.service.BlueToothService" android:exported="false">
             <intent-filter >
@@ -130,6 +137,9 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="Channel ID" />
+        <meta-data  
+        android:name="com.baidu.lbsapi.API_KEY"  
+        android:value="EGShYANqGXHQwTOy2Gn1ykxSY3nS0pVV" />  
     </application>
 
 </manifest>

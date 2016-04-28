@@ -1,12 +1,13 @@
 package com.junruyi.base;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+
 import android.app.Application;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
 
 public class LocationApplication extends Application {
 	public LocationClient mLocationClient;// 定位SDK的核心类
@@ -18,7 +19,7 @@ public class LocationApplication extends Application {
 		super.onCreate();
 		mLocationClient = new LocationClient(this.getApplicationContext());
 		mMyLocationListener = new MyLocationListener();
-		mLocationClient.registerLocationListener(mMyLocationListener);
+		mLocationClient.registerLocationListener((BDLocationListener) mMyLocationListener);
 	}
 
 	/**

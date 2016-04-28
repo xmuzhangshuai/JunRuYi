@@ -5,10 +5,14 @@ import java.util.HashMap;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -17,62 +21,89 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.junruyi.customewidget.MyAlertDialog;
 import com.junruyi.db.EquipmentDbService;
 import com.junruyi.service.BlueToothService;
-import com.junruyi.utils.LogTool;
 import com.smallrhino.junruyi.R;
 
-public class AddEquipmentActivity extends Activity {
+public class EquipmentListActivity extends Activity {
 
 	private EquipmentDbService equipmentDbService;
 
-	private ListView lv;
+	private PullToRefreshListView postListView;
 	SimpleAdapter mAdapter = null;
 	ArrayList<HashMap<String, Object>> listItem = null;
 
 	private MsgReceiver msgReceiver;
-	private String devices;
-	Intent service = null;
+	private BlueToothService bleservice = null;
+	Intent intent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.add_equipment);
+		setContentView(R.layout.activity_equipment_list);
 		equipmentDbService = EquipmentDbService
-				.getInstance(AddEquipmentActivity.this);
+				.getInstance(EquipmentListActivity.this);
 
-		lv = (ListView) findViewById(R.id.add_equipment_list);
+		postListView = (PullToRefreshListView) findViewById(R.id.add_equipment_list);
+		
 		listItem = new ArrayList<>();
-//		for (int i = 0; i < 10; i++) {
-//			HashMap<String, Object> map = new HashMap<>();
-//			map.put("ItemImage", R.drawable.ic_launcher);
-//			map.put("ItemTitle", "第" + i + "行");
-//			map.put("ItemText", "这是第" + i + "行");
-//			listItem.add(map);
-//		}
-
 		String from[] = new String[] { "ItemImage", "ItemTitle", "ItemText" };
 		int to[] = new int[] { R.id.ItemImage, R.id.ItemTitle, R.id.ItemText };
 		mAdapter = new SimpleAdapter(this, listItem, R.layout.bluetoothitem,
 				from, to);
-		lv.setAdapter(mAdapter);
-		lv.setOnItemClickListener(new ListViewListener());
-
+		postListView.setAdapter(mAdapter);
+		postListView.setOnItemClickListener(new ListViewListener());
+		
+		initView();
 		// 动态注册广播接收器
 		msgReceiver = new MsgReceiver();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction("com.example.communication.RECEIVER");
 		registerReceiver(msgReceiver, intentFilter);
-		
 	}
 	@Override
 	protected void onResume() {
 		super.onResume();
-		service = new Intent(this, BlueToothService.class);
-		startService(service);
-		LogTool.e("执行service");
+		startService(intent);
 	}
+	
+	public void initView(){
+		intent = new Intent();  
+		intent.setClass(this,BlueToothService.class); 
+		//bind服务
+		postListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
+
+			@Override
+			public void onPullDownToRefresh(
+					PullToRefreshBase<ListView> refreshView) {
+				String label = DateUtils.formatDateTime(
+						getApplicationContext(), System.currentTimeMillis(),
+						DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL);
+				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
+
+				postListView.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						startService(intent);
+						postListView.onRefreshComplete();
+					}
+				}, 100);
+			}
+
+			@Override
+			public void onPullUpToRefresh(
+					PullToRefreshBase<ListView> refreshView) {
+				
+			}
+
+		});
+	}
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -83,11 +114,27 @@ public class AddEquipmentActivity extends Activity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
+			position = position - 1;
 			String addr = listItem.get(position).get("ItemText").toString();
 			String name = listItem.get(position).get("ItemTitle").toString();
 			addEquipMent(addr, name);
 		}
 	}
+	
+	ServiceConnection serviceConnection = new ServiceConnection() {
+		
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			
+		}
+		
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			bleservice = ((BlueToothService.MsgBinder)service).getService();
+			System.out.println("bleservice"+bleservice);
+		}
+	};
+	
 
 	/**
 	 * 广播接收器
@@ -109,8 +156,10 @@ public class AddEquipmentActivity extends Activity {
 				map.put("ItemImage", R.drawable.ic_launcher);
 				map.put("ItemTitle", name);
 				map.put("ItemText", addr);
-				listItem.add(map);
-				mAdapter.notifyDataSetChanged();
+				if(!listItem.contains(map)){
+					listItem.add(map);
+					mAdapter.notifyDataSetChanged();
+				}
 			}
 		}
 	}
@@ -126,12 +175,11 @@ public class AddEquipmentActivity extends Activity {
 		View.OnClickListener comfirm = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				if (BlueToothService.connect(equipMentAddress)) {
-					Toast.makeText(AddEquipmentActivity.this, "连接成功....",
+					Toast.makeText(EquipmentListActivity.this, "连接成功....",
 							Toast.LENGTH_LONG).show();
 					equipmentDbService
-					.addEquipMent(equipMentAddress, equipmentName);
+					.addEquipMent(equipMentAddress, "Ruy'smart");
 				}
 				myAlertDialog.dismiss();
 			}

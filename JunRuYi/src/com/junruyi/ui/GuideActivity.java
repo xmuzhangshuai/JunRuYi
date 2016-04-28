@@ -1,25 +1,19 @@
 package com.junruyi.ui;
 
-import com.junruyi.base.BaseActivity;
-import com.junruyi.broadcast.BroadcastSpeed;
-import com.junruyi.db.CopyDataBase;
-import com.junruyi.service.BlueToothService;
-import com.junruyi.service.SpeedService;
-import com.junruyi.service.StepCounterService;
-import com.junruyi.ui.AddEquipmentActivity.MsgReceiver;
-import com.junruyi.utils.LogTool;
-import com.junruyi.utils.SharePreferenceUtil;
-import com.smallrhino.junruyi.R;
-import com.umeng.analytics.MobclickAgent;
-
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.junruyi.base.BaseActivity;
+import com.junruyi.db.CopyDataBase;
+import com.junruyi.service.BlueToothService;
+import com.junruyi.service.StepCounterService;
+import com.junruyi.utils.SharePreferenceUtil;
+import com.smallrhino.junruyi.R;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 类名称：GuideActivity
